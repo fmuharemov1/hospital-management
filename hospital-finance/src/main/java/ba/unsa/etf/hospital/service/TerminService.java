@@ -2,9 +2,12 @@ package ba.unsa.etf.hospital.service;
 
 import ba.unsa.etf.hospital.model.Termin;
 import ba.unsa.etf.hospital.repository.TerminRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class TerminService {
     private final TerminRepository terminRepository;
     public TerminService(TerminRepository terminRepository) {
@@ -15,5 +18,13 @@ public class TerminService {
     }
     public Termin saveTermin(Termin termin) {
         return terminRepository.save(termin);
+    }
+
+    public Optional<Termin> findById(Long id) {
+        return terminRepository.findById(id);
+    }
+
+    public void deleteById(Long id) {
+        terminRepository.deleteById(id);
     }
 }

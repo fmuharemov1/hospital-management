@@ -3,14 +3,16 @@ package ba.unsa.etf.hospital.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
 @Entity
+@Data
 public class Termin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @Column(unique = true)
     private UUID terminUuid;
 
     @ManyToOne
@@ -25,5 +27,5 @@ public class Termin {
     @JoinColumn(name = "faktura_id")
     private Faktura faktura;
 
-    private Date datumVrijeme;
+    private LocalDateTime datumVrijeme;
 }

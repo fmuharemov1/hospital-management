@@ -2,9 +2,12 @@ package ba.unsa.etf.hospital.service;
 
 import ba.unsa.etf.hospital.model.Role;
 import ba.unsa.etf.hospital.repository.RoleRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class RoleService {
     private final RoleRepository roleRepository;
     public RoleService(RoleRepository roleRepository) {
@@ -15,5 +18,13 @@ public class RoleService {
     }
     public Role saveRole(Role role) {
         return roleRepository.save(role);
+    }
+
+    public Optional<Role> findById(Long id) {
+        return roleRepository.findById(id);
+    }
+
+    public void deleteById(Long id) {
+        roleRepository.deleteById(id);
     }
 }
