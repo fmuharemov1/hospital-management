@@ -16,7 +16,7 @@ public class Faktura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @NotNull(message = "Polje iznos ne smije biti prazno")
     @Positive(message = "Iznos mora biti veći od 0 KM")
     private double iznos;
     @Size(max = 255, message = "Polje status može imati maksimalno 255 karaktera")

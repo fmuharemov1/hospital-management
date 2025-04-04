@@ -3,6 +3,7 @@ package ba.unsa.etf.hospital.controller;
 
 import ba.unsa.etf.hospital.model.Faktura;
 import ba.unsa.etf.hospital.service.FakturaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ba.unsa.etf.hospital.exception.FakturaNotFoundException;
@@ -19,14 +20,14 @@ public class FakturaController {
         List<Faktura> fakture = fakturaService.getAllFakture();
         return ResponseEntity.ok(fakture);}
     @PostMapping
-    public Faktura createFaktura(@RequestBody Faktura faktura) {return fakturaService.saveFaktura(faktura);}
+    public Faktura createFaktura(@Valid @RequestBody Faktura faktura) {return fakturaService.saveFaktura(faktura);}
 
     @GetMapping("/{id}")
     public Faktura one(@PathVariable Long id){
         return (Faktura) fakturaService.findById(id).orElseThrow(()->new FakturaNotFoundException(id));
     }
     @PutMapping("/{id}")
-    public Faktura replaceFaktura(@RequestBody Faktura newFaktura, @PathVariable Long id){
+    public Faktura replaceFaktura(@Valid @RequestBody Faktura newFaktura, @PathVariable Long id){
         return fakturaService.findById(id).map(faktura ->{
             faktura.setIznos(newFaktura.getIznos());
             faktura.setStatus(newFaktura.getStatus());
