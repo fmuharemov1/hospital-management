@@ -27,18 +27,6 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Termin not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
-    @ExceptionHandler(FakturaNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse fakturaNotFoundHandler(FakturaNotFoundException ex) {
-        return new ErrorResponse("Faktura not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
-    }
-
-    @ExceptionHandler(IzvjestajNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse izvjestajNotFoundHandler(IzvjestajNotFoundException ex) {
-        return new ErrorResponse("Izvjestaj not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
-    }
-
     @ExceptionHandler(KorisnikNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse korisnikNotFoundHandler(KorisnikNotFoundException ex) {

@@ -17,4 +17,36 @@ public class Role {
     private String tipKorisnika; // za sada ova tri atributa kao string, u budućnosti vjerovatno enum
     private String smjena;
     private String odjeljenje;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTipKorisnika() {
+        return tipKorisnika;
+    }
+
+    public void setTipKorisnika(String tipKorisnika) {
+        this.tipKorisnika = tipKorisnika;
+    }
+
+    public String getSmjena() {
+        return smjena;
+    }
+
+    public void setSmjena(String smjena) {
+        this.smjena = smjena;
+    }
+
+    public String getOdjeljenje() {
+        return odjeljenje;
+    }
+
+    public void setOdjeljenje(String odjeljenje) {
+        this.odjeljenje = odjeljenje;
+    }
 }

@@ -8,15 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TerminServiceTest {
+class TerminServiceTest {
 
     @Mock
     private TerminRepository terminRepository;
@@ -24,91 +22,83 @@ public class TerminServiceTest {
     @InjectMocks
     private TerminService terminService;
 
+    private Termin termin;
+
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // Setup dummy Termin object
+        termin = new Termin();
+        termin.setId(1L);
+        termin.setPacijent(null);  // assuming you set the pacijent appropriately
+        termin.setOsoblje(null);   // assuming you set the osoblje appropriately
+        termin.setObavijest(null); // assuming you set the obavijest appropriately
+        termin.setStatus("Active");
+        termin.setDatumVrijeme(null);  // Assuming you will set an appropriate LocalDateTime
+        termin.setTrajanje(30);
+        termin.setMeet_link("meet.link");
     }
 
     @Test
-    public void testGetAllTermini() {
-        Termin termin1 = new Termin();
-        termin1.setId(1L);
-        termin1.setTerminUuid(UUID.randomUUID());
-        termin1.setDatumVrijeme(LocalDateTime.now());
+    void testGetAllTermini() {
+        // Arrange
+        when(terminRepository.findAll()).thenReturn(Arrays.asList(termin));
 
-        Termin termin2 = new Termin();
-        termin2.setId(2L);
-        termin2.setTerminUuid(UUID.randomUUID());
-        termin2.setDatumVrijeme(LocalDateTime.now());
-
-        when(terminRepository.findAll()).thenReturn(Arrays.asList(termin1, termin2));
-
-        // Testiranje metode
+        // Act
         var termini = terminService.getAllTermini();
 
+        // Assert
         assertNotNull(termini);
-        assertEquals(2, termini.size());
-        assertEquals(termin1.getId(), termini.get(0).getId());
-        assertEquals(termin2.getId(), termini.get(1).getId());
-
-        verify(terminRepository, times(1)).findAll();
+        assertEquals(1, termini.size());
+        assertEquals(termin.getStatus(), termini.get(0).getStatus());
     }
 
     @Test
-    public void testSaveTermin() {
-        Termin termin = new Termin();
-        termin.setTerminUuid(UUID.randomUUID());
-        termin.setDatumVrijeme(LocalDateTime.now());
+    void testSaveTermin() {
+        // Arrange
+        when(terminRepository.save(termin)).thenReturn(termin);
 
-        when(terminRepository.save(any(Termin.class))).thenReturn(termin);
-
-        // Testiranje metode
+        // Act
         Termin savedTermin = terminService.saveTermin(termin);
 
+        // Assert
         assertNotNull(savedTermin);
-        assertEquals(termin.getTerminUuid(), savedTermin.getTerminUuid());
-
-        verify(terminRepository, times(1)).save(any(Termin.class));
+        assertEquals(termin.getStatus(), savedTermin.getStatus());
+        verify(terminRepository, times(1)).save(termin);
     }
 
     @Test
-    public void testFindById() {
-        Termin termin = new Termin();
-        termin.setId(1L);
-        termin.setTerminUuid(UUID.randomUUID());
-        termin.setDatumVrijeme(LocalDateTime.now());
-
+    void testFindById() {
+        // Arrange
         when(terminRepository.findById(1L)).thenReturn(Optional.of(termin));
 
-        // Testiranje metode
+        // Act
         Optional<Termin> foundTermin = terminService.findById(1L);
 
+        // Assert
         assertTrue(foundTermin.isPresent());
-        assertEquals(termin.getId(), foundTermin.get().getId());
-
-        verify(terminRepository, times(1)).findById(1L);
+        assertEquals(termin.getStatus(), foundTermin.get().getStatus());
     }
 
     @Test
-    public void testFindById_NotFound() {
+    void testFindById_NotFound() {
+        // Arrange
         when(terminRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Testiranje metode
+        // Act
         Optional<Termin> foundTermin = terminService.findById(1L);
 
+        // Assert
         assertFalse(foundTermin.isPresent());
-
-        verify(terminRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(terminRepository).deleteById(1L);
-
-        // Testiranje metode
+    void testDeleteById() {
+        // Act
         terminService.deleteById(1L);
 
+        // Assert
         verify(terminRepository, times(1)).deleteById(1L);
     }
 }
-

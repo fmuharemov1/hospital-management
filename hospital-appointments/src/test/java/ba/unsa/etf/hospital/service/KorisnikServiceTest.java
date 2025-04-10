@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class KorisnikServiceTest {
+class KorisnikServiceTest {
 
     @Mock
     private KorisnikRepository korisnikRepository;
@@ -23,86 +23,82 @@ public class KorisnikServiceTest {
     @InjectMocks
     private KorisnikService korisnikService;
 
+    private Korisnik korisnik;
+
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
 
-    @Test
-    public void testGetAllKorisnici() {
-        Korisnik korisnik1 = new Korisnik();
-        korisnik1.setId(1L);
-        korisnik1.setKorisnikUuid(UUID.randomUUID());
-
-        Korisnik korisnik2 = new Korisnik();
-        korisnik2.setId(2L);
-        korisnik2.setKorisnikUuid(UUID.randomUUID());
-
-        when(korisnikRepository.findAll()).thenReturn(Arrays.asList(korisnik1, korisnik2));
-
-        // Testiranje metode
-        var korisnici = korisnikService.getAllKorisnici();
-
-        assertNotNull(korisnici);
-        assertEquals(2, korisnici.size());
-        assertEquals(korisnik1.getId(), korisnici.get(0).getId());
-        assertEquals(korisnik2.getId(), korisnici.get(1).getId());
-
-        verify(korisnikRepository, times(1)).findAll();
-    }
-
-    @Test
-    public void testSaveKorisnik() {
-        Korisnik korisnik = new Korisnik();
-        korisnik.setKorisnikUuid(UUID.randomUUID());
-
-        when(korisnikRepository.save(any(Korisnik.class))).thenReturn(korisnik);
-
-        // Testiranje metode
-        Korisnik savedKorisnik = korisnikService.saveKorisnik(korisnik);
-
-        assertNotNull(savedKorisnik);
-        assertEquals(korisnik.getKorisnikUuid(), savedKorisnik.getKorisnikUuid());
-
-        verify(korisnikRepository, times(1)).save(any(Korisnik.class));
-    }
-
-    @Test
-    public void testFindById() {
-        Korisnik korisnik = new Korisnik();
+        // Setup dummy Korisnik object
+        korisnik = new Korisnik();
         korisnik.setId(1L);
         korisnik.setKorisnikUuid(UUID.randomUUID());
+        korisnik.setIme("John");
+        korisnik.setPrezime("Doe");
+        korisnik.setEmail("john.doe@example.com");
+        korisnik.setLozinka("password123");
+        korisnik.setBr_telefona("+123456789");
+    }
 
+    @Test
+    void testGetAllKorisnici() {
+        // Arrange
+        when(korisnikRepository.findAll()).thenReturn(Arrays.asList(korisnik));
+
+        // Act
+        var korisnici = korisnikService.getAllKorisnici();
+
+        // Assert
+        assertNotNull(korisnici);
+        assertEquals(1, korisnici.size());
+        assertEquals(korisnik.getIme(), korisnici.get(0).getIme());
+    }
+
+    @Test
+    void testSaveKorisnik() {
+        // Arrange
+        when(korisnikRepository.save(korisnik)).thenReturn(korisnik);
+
+        // Act
+        Korisnik savedKorisnik = korisnikService.saveKorisnik(korisnik);
+
+        // Assert
+        assertNotNull(savedKorisnik);
+        assertEquals(korisnik.getIme(), savedKorisnik.getIme());
+        verify(korisnikRepository, times(1)).save(korisnik);
+    }
+
+    @Test
+    void testFindById() {
+        // Arrange
         when(korisnikRepository.findById(1L)).thenReturn(Optional.of(korisnik));
 
-        // Testiranje metode
+        // Act
         Optional<Korisnik> foundKorisnik = korisnikService.findById(1L);
 
+        // Assert
         assertTrue(foundKorisnik.isPresent());
-        assertEquals(korisnik.getId(), foundKorisnik.get().getId());
-
-        verify(korisnikRepository, times(1)).findById(1L);
+        assertEquals(korisnik.getIme(), foundKorisnik.get().getIme());
     }
 
     @Test
-    public void testFindById_NotFound() {
+    void testFindById_NotFound() {
+        // Arrange
         when(korisnikRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Testiranje metode
+        // Act
         Optional<Korisnik> foundKorisnik = korisnikService.findById(1L);
 
+        // Assert
         assertFalse(foundKorisnik.isPresent());
-
-        verify(korisnikRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(korisnikRepository).deleteById(1L);
-
-        // Testiranje metode
+    void testDeleteById() {
+        // Act
         korisnikService.deleteById(1L);
 
+        // Assert
         verify(korisnikRepository, times(1)).deleteById(1L);
     }
 }

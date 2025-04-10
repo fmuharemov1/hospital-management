@@ -41,4 +41,76 @@ public class Termin {
     private Integer trajanje;
 
     private String meet_link;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UUID getTerminUuid() {
+        return terminUuid;
+    }
+
+    public void setTerminUuid(UUID terminUuid) {
+        this.terminUuid = terminUuid;
+    }
+
+    public Korisnik getPacijent() {
+        return pacijent;
+    }
+
+    public void setPacijent(Korisnik pacijent) {
+        this.pacijent = pacijent;
+    }
+
+    public Korisnik getOsoblje() {
+        return osoblje;
+    }
+
+    public void setOsoblje(Korisnik osoblje) {
+        this.osoblje = osoblje;
+    }
+
+    public Obavijest getObavijest() {
+        return obavijest;
+    }
+
+    public void setObavijest(Obavijest obavijest) {
+        this.obavijest = obavijest;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getDatumVrijeme() {
+        return datumVrijeme;
+    }
+
+    public void setDatumVrijeme(LocalDateTime datumVrijeme) {
+        this.datumVrijeme = datumVrijeme;
+    }
+
+    public Integer getTrajanje() {
+        return trajanje;
+    }
+
+    public void setTrajanje(Integer trajanje) {
+        this.trajanje = trajanje;
+    }
+
+    public String getMeet_link() {
+        return meet_link;
+    }
+
+    public void setMeet_link(String meet_link) {
+        this.meet_link = meet_link;
+    }
 }

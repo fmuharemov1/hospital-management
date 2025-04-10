@@ -21,4 +21,28 @@ public class Obavijest {
 
     @NotNull(message = "Polje datum i vrijeme ne smije biti prazno")
     private LocalDateTime datum_vrijeme;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSadrzaj() {
+        return sadrzaj;
+    }
+
+    public void setSadrzaj(String sadrzaj) {
+        this.sadrzaj = sadrzaj;
+    }
+
+    public LocalDateTime getDatum_vrijeme() {
+        return datum_vrijeme;
+    }
+
+    public void setDatum_vrijeme(LocalDateTime datum_vrijeme) {
+        this.datum_vrijeme = datum_vrijeme;
+    }
 }

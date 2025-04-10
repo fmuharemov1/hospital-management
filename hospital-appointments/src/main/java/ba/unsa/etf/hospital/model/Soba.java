@@ -26,4 +26,44 @@ public class Soba {
     @ManyToOne
     @JoinColumn(name = "pacijent_id", referencedColumnName = "id", nullable = false)
     private Korisnik korisnik;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getBroj_sobe() {
+        return broj_sobe;
+    }
+
+    public void setBroj_sobe(String broj_sobe) {
+        this.broj_sobe = broj_sobe;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getKapacitet() {
+        return kapacitet;
+    }
+
+    public void setKapacitet(int kapacitet) {
+        this.kapacitet = kapacitet;
+    }
+
+    public Korisnik getKorisnik() {
+        return korisnik;
+    }
+
+    public void setKorisnik(Korisnik korisnik) {
+        this.korisnik = korisnik;
+    }
 }

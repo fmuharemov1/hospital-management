@@ -43,4 +43,68 @@ public class Korisnik {
     @NotBlank(message = "Polje broj telefona ne smije biti prazno")
     @Pattern(regexp = "^\\+?[0-9]{1,15}$", message = "Broj telefona nije validan")
     private String br_telefona;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UUID getKorisnikUuid() {
+        return korisnikUuid;
+    }
+
+    public void setKorisnikUuid(UUID korisnikUuid) {
+        this.korisnikUuid = korisnikUuid;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getIme() {
+        return ime;
+    }
+
+    public void setIme(String ime) {
+        this.ime = ime;
+    }
+
+    public String getPrezime() {
+        return prezime;
+    }
+
+    public void setPrezime(String prezime) {
+        this.prezime = prezime;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLozinka() {
+        return lozinka;
+    }
+
+    public void setLozinka(String lozinka) {
+        this.lozinka = lozinka;
+    }
+
+    public String getBr_telefona() {
+        return br_telefona;
+    }
+
+    public void setBr_telefona(String br_telefona) {
+        this.br_telefona = br_telefona;
+    }
 }
