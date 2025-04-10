@@ -18,19 +18,27 @@ public class Termin {
 
     @NotNull(message = "Polje Pacijent ne smije biti prazno")
     @ManyToOne
-    @JoinColumn(name = "pacijent_uuid")
+    @JoinColumn(name = "pacijent_id")
     private Korisnik pacijent;
 
     @NotNull(message = "Polje Osoblje ne smije biti prazno")
     @ManyToOne
-    @JoinColumn(name = "osoblje_uuid")
+    @JoinColumn(name = "osoblje_id")
     private Korisnik osoblje;
 
-    @NotNull(message = "Polje Faktura ne smije biti prazno")
-    @ManyToOne
-    @JoinColumn(name = "faktura_id")
-    private Faktura faktura;
+    @NotNull(message = "Polje obavijest_id ne smije biti prazno")
+    @OneToOne
+    @JoinColumn(name = "obavijest_id")
+    private Obavijest obavijest;
+
+    @NotNull(message = "Polje status ne smije biti prazno")
+    private String status;
 
     @NotNull(message = "Polje Datum i vrijeme ne smije biti prazno")
     private LocalDateTime datumVrijeme;
+
+    @NotNull(message = "Polje trajanje ne smije biti prazno")
+    private Integer trajanje;
+
+    private String meet_link;
 }

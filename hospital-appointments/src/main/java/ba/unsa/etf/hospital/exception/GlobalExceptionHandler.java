@@ -15,11 +15,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage()) // Prijateljski format
+                .map(error -> error.getField() + ": " + error.getDefaultMessage()) // Friendly format
                 .collect(Collectors.toList());
         String errorMessage = String.join(", ", errors);
         return new ErrorResponse("Invalid", errorMessage, HttpStatus.BAD_REQUEST.value());
     }
+
     @ExceptionHandler(TerminNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse terminNotFoundHandler(TerminNotFoundException ex) {
@@ -31,25 +32,42 @@ public class GlobalExceptionHandler {
     public ErrorResponse fakturaNotFoundHandler(FakturaNotFoundException ex) {
         return new ErrorResponse("Faktura not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
     }
+
     @ExceptionHandler(IzvjestajNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse izvjestajNotFoundHandler(IzvjestajNotFoundException ex) {
         return new ErrorResponse("Izvjestaj not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
     }
+
     @ExceptionHandler(KorisnikNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse korisnikNotFoundHandler(KorisnikNotFoundException ex) {
         return new ErrorResponse("Korisnik not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
     }
+
     @ExceptionHandler(RoleNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse roleNotFoundHandler(RoleNotFoundException ex) {
         return new ErrorResponse("Role not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
-    @ExceptionHandler(Exception.class)  // Generalni handler za sve neočekivane greške
+    // Add handler for SobaNotFoundException
+    @ExceptionHandler(SobaNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse sobaNotFoundHandler(SobaNotFoundException ex) {
+        return new ErrorResponse("Soba not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
+    }
+
+    // Add handler for ObavijestNotFoundException
+    @ExceptionHandler(ObavijestNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse obavijestNotFoundHandler(ObavijestNotFoundException ex) {
+        return new ErrorResponse("Obavijest not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
+    }
+
+    @ExceptionHandler(Exception.class)  // General handler for all unexpected errors
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse globalExceptionHandler(Exception ex) {
-        return new ErrorResponse("Internal Server Error", "Došlo je do greške: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ErrorResponse("Internal Server Error", "An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

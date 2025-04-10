@@ -14,7 +14,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Polje Tip korisnika ne smije biti prazno")
-    private String tipKorisnika;
+    private String tipKorisnika; // za sada ova tri atributa kao string, u budućnosti vjerovatno enum
     private String smjena;
     private String odjeljenje;
 }
