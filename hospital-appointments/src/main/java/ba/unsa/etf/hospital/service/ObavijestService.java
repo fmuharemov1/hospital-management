@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.ObavijestNotFoundException;
 import ba.unsa.etf.hospital.model.Obavijest;
 import ba.unsa.etf.hospital.repository.ObavijestRepository;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class ObavijestService {
     }
 
     public void deleteById(Long id) {
+        if (!obavijestRepository.existsById(id)) {
+            throw new ObavijestNotFoundException(id);
+        }
         obavijestRepository.deleteById(id);
     }
 }

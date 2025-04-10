@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.SobaNotFoundException;
 import ba.unsa.etf.hospital.model.Soba;
 import ba.unsa.etf.hospital.repository.SobaRepository;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class SobaService {
     }
 
     public void deleteById(Long id) {
+        if (!sobaRepository.existsById(id)) {
+            throw new SobaNotFoundException(id);
+        }
         sobaRepository.deleteById(id);
     }
 }

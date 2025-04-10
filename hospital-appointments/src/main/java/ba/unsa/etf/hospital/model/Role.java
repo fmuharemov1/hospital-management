@@ -15,7 +15,9 @@ public class Role {
     private Long id;
     @NotBlank(message = "Polje Tip korisnika ne smije biti prazno")
     private String tipKorisnika; // za sada ova tri atributa kao string, u budućnosti vjerovatno enum
+    @NotBlank(message = "Polje smjena ne smije biti prazno")
     private String smjena;
+    @NotBlank(message = "Polje odjeljenje ne smije biti prazno")
     private String odjeljenje;
 
     public Long getId() {
