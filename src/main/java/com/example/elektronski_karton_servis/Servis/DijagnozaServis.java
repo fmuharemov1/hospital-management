@@ -14,6 +14,8 @@ public class DijagnozaServis {
     @Autowired
     private DijagnozaRepository dijagnozaRepository;
 
+
+
     public List<Dijagnoza> getAllDijagnoze() {
         return dijagnozaRepository.findAll();
     }
