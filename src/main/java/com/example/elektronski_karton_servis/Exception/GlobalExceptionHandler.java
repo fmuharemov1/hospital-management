@@ -1,10 +1,12 @@
 package com.example.elektronski_karton_servis.Exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,10 +17,23 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage()) // Prijateljski format
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.toList());
         String errorMessage = String.join(", ", errors);
         return new ErrorResponse("Invalid", errorMessage, HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        return new ErrorResponse("Bad Request", "Invalid JSON format or JSON Patch request: " + ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        String errorMessage = "Neispravan format parametra: " + ex.getName() + ". Očekivani tip: " + ex.getRequiredType().getSimpleName();
+        return new ErrorResponse("Bad Request", errorMessage, HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(TerminNotFoundException.class)
@@ -57,9 +72,9 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Role not found", ex.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
-    @ExceptionHandler(Exception.class)  // Generalni handler za sve neočekivane greške
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse globalExceptionHandler(Exception ex) {
-        return new ErrorResponse("Internal Server Error", "Došlo je do greške: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ErrorResponse("Internal Server Error", "Došlo je do neočekivane greške.", HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

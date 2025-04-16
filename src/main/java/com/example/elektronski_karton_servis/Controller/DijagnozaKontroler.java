@@ -1,17 +1,29 @@
 package com.example.elektronski_karton_servis.Controller;
 
 import com.example.elektronski_karton_servis.Exception.DijagnozaNotFoundException;
-import com.example.elektronski_karton_servis.Exception.KartonNotFoundException;
 import com.example.elektronski_karton_servis.model.Dijagnoza;
-import com.example.elektronski_karton_servis.Repository.DijagnozaRepository; // Pretpostavljam da je ovo ispravan put
+import com.example.elektronski_karton_servis.Repository.DijagnozaRepository; // Vjerovatno ćete ovo ukloniti
+import com.example.elektronski_karton_servis.Servis.DijagnozaServis; // Dodajte ovaj import
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -23,9 +35,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class DijagnozaKontroler {
 
     private final DijagnozaRepository dijagnozaRepository;
+    private final DijagnozaServis dijagnozaServis;
 
-    public DijagnozaKontroler(DijagnozaRepository dijagnozaRepository) {
+    public DijagnozaKontroler(DijagnozaRepository dijagnozaRepository, DijagnozaServis dijagnozaServis) {
         this.dijagnozaRepository = dijagnozaRepository;
+        this.dijagnozaServis = dijagnozaServis;
     }
 
     @GetMapping
@@ -86,6 +100,7 @@ public class DijagnozaKontroler {
             throw new DijagnozaNotFoundException(id);
         }
     }
+
 }
 
 

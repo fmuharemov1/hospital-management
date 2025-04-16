@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -34,13 +32,13 @@ public class KartonServisTest {
     public void testGetAllKartoni() {
         Karton karton1 = new Karton();
         karton1.setId(1);
-        karton1.setPacijentUuid(123); // Koristite Integer
+        karton1.setPacijentUuid(123);
         karton1.setDatumKreiranja(LocalDateTime.now());
         karton1.setBrojKartona("K123");
 
         Karton karton2 = new Karton();
         karton2.setId(2);
-        karton2.setPacijentUuid(456); // Koristite Integer
+        karton2.setPacijentUuid(456);
         karton2.setDatumKreiranja(LocalDateTime.now().minusDays(1));
         karton2.setBrojKartona("K456");
 
@@ -52,7 +50,7 @@ public class KartonServisTest {
         assertEquals(2, kartoni.size());
         assertEquals(karton1.getId(), kartoni.get(0).getId());
         assertEquals(karton1.getPacijentUuid(), kartoni.get(0).getPacijentUuid());
-        assertEquals(karton1.getBrojKartona(), kartoni.get(0).getBrojKartona()); // Dodano
+        assertEquals(karton1.getBrojKartona(), kartoni.get(0).getBrojKartona());
 
         assertEquals(karton2.getId(), kartoni.get(1).getId());
         assertEquals(karton2.getPacijentUuid(), kartoni.get(1).getPacijentUuid());
@@ -65,7 +63,7 @@ public class KartonServisTest {
     public void testFindById() {
         Karton karton = new Karton();
         karton.setId(1);
-        karton.setPacijentUuid(123); // Koristite Integer
+        karton.setPacijentUuid(123);
         karton.setDatumKreiranja(LocalDateTime.now());
         karton.setBrojKartona("K123");
 
@@ -95,7 +93,7 @@ public class KartonServisTest {
     @Test
     public void testSaveKarton() {
         Karton kartonToSave = new Karton();
-        kartonToSave.setPacijentUuid(123); // Koristite Integer
+        kartonToSave.setPacijentUuid(123);
         kartonToSave.setDatumKreiranja(LocalDateTime.now());
         kartonToSave.setBrojKartona("K789");
 
@@ -118,12 +116,85 @@ public class KartonServisTest {
     }
 
     @Test
+    public void testUpdateKarton() {
+        Integer kartonIdToUpdate = 1;
+        Karton existingKarton = new Karton();
+        existingKarton.setId(kartonIdToUpdate);
+        existingKarton.setPacijentUuid(111);
+        existingKarton.setDatumKreiranja(LocalDateTime.now().minusDays(2));
+        existingKarton.setBrojKartona("OLD123");
+
+        Karton updatedKartonDetails = new Karton();
+        updatedKartonDetails.setPacijentUuid(222);
+        updatedKartonDetails.setDatumKreiranja(LocalDateTime.now());
+        updatedKartonDetails.setBrojKartona("NEW456");
+
+        Karton savedUpdatedKarton = new Karton();
+        savedUpdatedKarton.setId(kartonIdToUpdate);
+        savedUpdatedKarton.setPacijentUuid(updatedKartonDetails.getPacijentUuid());
+        savedUpdatedKarton.setDatumKreiranja(updatedKartonDetails.getDatumKreiranja());
+        savedUpdatedKarton.setBrojKartona(updatedKartonDetails.getBrojKartona());
+
+        when(kartonRepository.findById(kartonIdToUpdate)).thenReturn(Optional.of(existingKarton));
+        when(kartonRepository.save(any(Karton.class))).thenReturn(savedUpdatedKarton);
+
+        Optional<Karton> result = kartonServis.updateKarton(kartonIdToUpdate, updatedKartonDetails);
+
+        assertTrue(result.isPresent());
+        assertEquals(kartonIdToUpdate, result.get().getId());
+        assertEquals(updatedKartonDetails.getPacijentUuid(), result.get().getPacijentUuid());
+        assertEquals(updatedKartonDetails.getBrojKartona(), result.get().getBrojKartona());
+
+        verify(kartonRepository, times(1)).findById(kartonIdToUpdate);
+        verify(kartonRepository, times(1)).save(existingKarton); // existingKarton se ažurira i sprema
+    }
+
+    @Test
+    public void testUpdateKarton_NotFound() {
+        Integer kartonIdToUpdate = 1;
+        Karton updatedKartonDetails = new Karton();
+        updatedKartonDetails.setPacijentUuid(222);
+        updatedKartonDetails.setDatumKreiranja(LocalDateTime.now());
+        updatedKartonDetails.setBrojKartona("NEW456");
+
+        when(kartonRepository.findById(kartonIdToUpdate)).thenReturn(Optional.empty());
+
+        Optional<Karton> result = kartonServis.updateKarton(kartonIdToUpdate, updatedKartonDetails);
+
+        assertFalse(result.isPresent());
+
+        verify(kartonRepository, times(1)).findById(kartonIdToUpdate);
+        verify(kartonRepository, never()).save(any(Karton.class));
+    }
+
+    @Test
     public void testDeleteById() {
         int kartonIdToDelete = 1;
+
+        // Postavite ponašanje za existsById da vrati true (karton postoji)
+        when(kartonRepository.existsById(kartonIdToDelete)).thenReturn(true);
+
+        // Postavite ponašanje za deleteById da ne radi ništa
         doNothing().when(kartonRepository).deleteById(kartonIdToDelete);
 
-        kartonServis.deleteById(kartonIdToDelete);
+        boolean result = kartonServis.deleteById(kartonIdToDelete);
 
+        assertTrue(result);
+        verify(kartonRepository, times(1)).existsById(kartonIdToDelete);
         verify(kartonRepository, times(1)).deleteById(kartonIdToDelete);
+    }
+
+    @Test
+    public void testDeleteById_NotFound() {
+        int kartonIdToDelete = 1;
+
+        // Postavite ponašanje za existsById da vrati false (karton ne postoji)
+        when(kartonRepository.existsById(kartonIdToDelete)).thenReturn(false);
+
+        boolean result = kartonServis.deleteById(kartonIdToDelete);
+
+        assertFalse(result);
+        verify(kartonRepository, times(1)).existsById(kartonIdToDelete);
+        verify(kartonRepository, never()).deleteById(kartonIdToDelete);
     }
 }

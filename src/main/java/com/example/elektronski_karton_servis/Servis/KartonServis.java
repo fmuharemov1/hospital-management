@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class KartonServis {
 
+    private final KartonRepository kartonRepository;
+
     @Autowired
-    private KartonRepository kartonRepository;
+    public KartonServis(KartonRepository kartonRepository) {
+        this.kartonRepository = kartonRepository;
+    }
 
     public List<Karton> getAllKartoni() {
         return kartonRepository.findAll();
@@ -26,10 +30,21 @@ public class KartonServis {
         return kartonRepository.save(karton);
     }
 
-    public void deleteById(Integer id) {
-        kartonRepository.deleteById(id);
+    public Optional<Karton> updateKarton(Integer id, Karton noviKarton) {
+        return kartonRepository.findById(id)
+                .map(existingKarton -> {
+                    existingKarton.setPacijentUuid(noviKarton.getPacijentUuid());
+                    existingKarton.setDatumKreiranja(noviKarton.getDatumKreiranja());
+                    existingKarton.setBrojKartona(noviKarton.getBrojKartona());
+                    return kartonRepository.save(existingKarton);
+                });
+    }
+
+    public boolean deleteById(Integer id) {
+        if (kartonRepository.existsById(id)) {
+            kartonRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
-
-
-
