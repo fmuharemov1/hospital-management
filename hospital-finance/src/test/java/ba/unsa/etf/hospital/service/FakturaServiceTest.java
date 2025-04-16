@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.FakturaNotFoundException;
 import ba.unsa.etf.hospital.model.Faktura;
 import ba.unsa.etf.hospital.repository.FakturaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,6 +70,7 @@ public class FakturaServiceTest {
         assertNotNull(savedFaktura);
         assertEquals(150.0, savedFaktura.getIznos());
         assertEquals("Debit", savedFaktura.getMetod());
+        assertEquals(faktura.getIznos(), savedFaktura.getIznos()); // Provjera iznosa
 
         verify(fakturaRepository, times(1)).save(faktura);
     }
@@ -94,24 +96,35 @@ public class FakturaServiceTest {
     }
 
     @Test
-    public void testFindById_NotFound() {
-        when(fakturaRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Testiranje metode findById() kada entitet nije pronađen
-        Optional<Faktura> foundFaktura = fakturaService.findById(1L);
-
-        assertFalse(foundFaktura.isPresent());
-        verify(fakturaRepository, times(1)).findById(1L);
-    }
-
-    @Test
     public void testDeleteById() {
-        doNothing().when(fakturaRepository).deleteById(1L);
+        Long id = 1L;
 
-        // Testiranje metode deleteById()
-        fakturaService.deleteById(1L);
+        Faktura faktura = new Faktura();
+        faktura.setId(id);
 
-        verify(fakturaRepository, times(1)).deleteById(1L);
+        // Mockiramo da entitet postoji
+        when(fakturaRepository.findById(id)).thenReturn(Optional.of(faktura));
+        doNothing().when(fakturaRepository).deleteById(id);
+
+        // Poziv metode
+        fakturaService.deleteById(id);
+
+        // Verifikacija
+        verify(fakturaRepository, times(1)).findById(id);
+        verify(fakturaRepository, times(1)).deleteById(id);
+    }
+    @Test
+    public void testDeleteById_NotFound() {
+        Long id = 1L;
+
+        // Simuliramo da faktura ne postoji
+        when(fakturaRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Provjeravamo da baca izuzetak
+        assertThrows(FakturaNotFoundException.class, () -> fakturaService.deleteById(id));
+
+        // deleteById se ne smije pozvati jer faktura nije pronađena
+        verify(fakturaRepository, times(1)).findById(id);
+        verify(fakturaRepository, never()).deleteById(id);
     }
 }
-

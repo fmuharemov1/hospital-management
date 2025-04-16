@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 public class Termin {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private UUID terminUuid;

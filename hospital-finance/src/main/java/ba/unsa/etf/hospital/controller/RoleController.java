@@ -44,7 +44,8 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRole(@PathVariable Long id){
-        roleService.deleteById(id);
+    public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
+        roleService.deleteById(id);  // Poziv servisa za brisanje role
+        return ResponseEntity.noContent().build();  // HTTP 204, bez tijela odgovora
     }
 }

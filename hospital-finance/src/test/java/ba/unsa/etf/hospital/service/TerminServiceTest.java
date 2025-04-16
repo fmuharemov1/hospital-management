@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.TerminNotFoundException;
 import ba.unsa.etf.hospital.model.Termin;
 import ba.unsa.etf.hospital.repository.TerminRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +14,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class TerminServiceTest {
 
@@ -88,27 +89,33 @@ public class TerminServiceTest {
 
         verify(terminRepository, times(1)).findById(1L);
     }
-
     @Test
-    public void testFindById_NotFound() {
-        when(terminRepository.findById(1L)).thenReturn(Optional.empty());
+    public void testDeleteById_Termin() {
+        Long id = 1L;
 
-        // Testiranje metode
-        Optional<Termin> foundTermin = terminService.findById(1L);
+        Termin termin = new Termin();
+        termin.setId(id);
 
-        assertFalse(foundTermin.isPresent());
+        when(terminRepository.findById(id)).thenReturn(Optional.of(termin));
+        doNothing().when(terminRepository).deleteById(id);
 
-        verify(terminRepository, times(1)).findById(1L);
+        terminService.deleteById(id);
+
+        verify(terminRepository, times(1)).findById(id);
+        verify(terminRepository, times(1)).deleteById(id);
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(terminRepository).deleteById(1L);
+    public void testDeleteById_Termin_NotFound() {
+        Long id = 1L;
 
-        // Testiranje metode
-        terminService.deleteById(1L);
+        when(terminRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(terminRepository, times(1)).deleteById(1L);
+        assertThrows(TerminNotFoundException.class, () -> terminService.deleteById(id));
+
+        verify(terminRepository, times(1)).findById(id);
+        verify(terminRepository, never()).deleteById(id);
     }
+
+
 }
-

@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.RoleNotFoundException;
 import ba.unsa.etf.hospital.model.Role;
 import ba.unsa.etf.hospital.repository.RoleRepository;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,10 @@ public class RoleService {
     }
 
     public void deleteById(Long id) {
-        roleRepository.deleteById(id);
+        // Provjeri da li role postoji
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException(id));  // Ako role nije pronađena, baci izuzetak
+
+        roleRepository.deleteById(id);  // Ako je pronađena, obriši
     }
 }

@@ -42,8 +42,9 @@ public class KorisnikController {
                 });
     }
     @DeleteMapping("/{id}")
-    public void deleteKorisnik(@PathVariable Long id){
-        korisnikService.deleteById(id);
+    public ResponseEntity<Void> deleteKorisnik(@PathVariable Long id) {
+        korisnikService.deleteById(id);  // Poziv servisa za brisanje korisnika
+        return ResponseEntity.noContent().build();  // HTTP 204, bez tijela odgovora
     }
 
 }

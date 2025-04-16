@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.KorisnikNotFoundException;
 import ba.unsa.etf.hospital.model.Korisnik;
 import ba.unsa.etf.hospital.repository.KorisnikRepository;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,10 @@ public class KorisnikService {
     }
 
     public void deleteById(Long id) {
-        korisnikRepository.deleteById(id);
+        // Provjeri da li korisnik postoji
+        Korisnik korisnik = korisnikRepository.findById(id)
+                .orElseThrow(() -> new KorisnikNotFoundException(id));  // Ako korisnik nije pronađen, baci exception
+
+        korisnikRepository.deleteById(id);  // Ako je pronađen, obriši ga
     }
 }

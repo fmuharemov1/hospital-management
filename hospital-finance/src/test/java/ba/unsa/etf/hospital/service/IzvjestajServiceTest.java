@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.IzvjestajNotFoundException;
 import ba.unsa.etf.hospital.model.Izvjestaj;
 import ba.unsa.etf.hospital.repository.IzvjestajRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +10,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import static org.mockito.Mockito.*;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class IzvjestajServiceTest {
 
@@ -83,24 +86,45 @@ public class IzvjestajServiceTest {
     }
 
     @Test
-    public void testFindById_NotFound() {
-        when(izvjestajRepository.findById(1L)).thenReturn(Optional.empty());
+    public void testDeleteById_Izvjestaj() {
+        Long id = 1L;
 
-        // Testiranje metode
-        Optional<Izvjestaj> foundIzvjestaj = izvjestajService.findById(1L);
+        Izvjestaj izvjestaj = new Izvjestaj();
+        izvjestaj.setId(id);
 
-        assertFalse(foundIzvjestaj.isPresent());
+        when(izvjestajRepository.findById(id)).thenReturn(Optional.of(izvjestaj));
+        doNothing().when(izvjestajRepository).deleteById(id);
 
-        verify(izvjestajRepository, times(1)).findById(1L);
+        izvjestajService.deleteById(id);
+
+        verify(izvjestajRepository, times(1)).findById(id);
+        verify(izvjestajRepository, times(1)).deleteById(id);
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(izvjestajRepository).deleteById(1L);
+    public void testDeleteById_Izvjestaj_NotFound() {
+        Long id = 1L;
 
-        // Testiranje metode
-        izvjestajService.deleteById(1L);
+        when(izvjestajRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(izvjestajRepository, times(1)).deleteById(1L);
+        assertThrows(IzvjestajNotFoundException.class, () -> izvjestajService.deleteById(id));
+
+        verify(izvjestajRepository, times(1)).findById(id);
+        verify(izvjestajRepository, never()).deleteById(id);
     }
+    @Test
+    public void testGetIzvjestajiByTipAndMinIznos() {
+        Izvjestaj izvjestaj = new Izvjestaj();
+        izvjestaj.setTipIzvjestaja("Mjesecni");
+        izvjestaj.setFinansijskiPregled(2000.00);
+
+        when(izvjestajRepository.findIzvjestajiByTipAndIznosGreaterThan("Mjesecni", 1000.00))
+                .thenReturn(Arrays.asList(izvjestaj));
+
+        List<Izvjestaj> result = izvjestajService.getIzvjestajiByTipAndMinIznos("Mjesecni", 1000.00);
+
+        assertEquals(1, result.size());
+        assertEquals("Mjesecni", result.get(0).getTipIzvjestaja());
+    }
+
 }

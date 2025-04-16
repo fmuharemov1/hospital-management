@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.RoleNotFoundException;
 import ba.unsa.etf.hospital.model.Role;
 import ba.unsa.etf.hospital.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +12,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class RoleServiceTest {
 
@@ -84,25 +85,32 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void testFindById_NotFound() {
-        when(roleRepository.findById(1L)).thenReturn(Optional.empty());
+    public void testDeleteById_Role() {
+        Long id = 1L;
 
-        // Testiranje metode
-        Optional<Role> foundRole = roleService.findById(1L);
+        Role role = new Role();
+        role.setId(id);
 
-        assertFalse(foundRole.isPresent());
+        when(roleRepository.findById(id)).thenReturn(Optional.of(role));
+        doNothing().when(roleRepository).deleteById(id);
 
-        verify(roleRepository, times(1)).findById(1L);
+        roleService.deleteById(id);
+
+        verify(roleRepository, times(1)).findById(id);
+        verify(roleRepository, times(1)).deleteById(id);
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(roleRepository).deleteById(1L);
+    public void testDeleteById_Role_NotFound() {
+        Long id = 1L;
 
-        // Testiranje metode
-        roleService.deleteById(1L);
+        when(roleRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(roleRepository, times(1)).deleteById(1L);
+        assertThrows(RoleNotFoundException.class, () -> roleService.deleteById(id));
+
+        verify(roleRepository, times(1)).findById(id);
+        verify(roleRepository, never()).deleteById(id);
     }
-}
 
+
+}
