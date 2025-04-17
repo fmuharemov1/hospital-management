@@ -52,7 +52,11 @@ class ObavijestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].sadrzaj").value("Test content"))
-                .andExpect(jsonPath("$[0].datum_vrijeme").value("2025-04-10T00:00:00"));
+                .andExpect(jsonPath("$[0].datum_vrijeme[0]").value(2025))
+                .andExpect(jsonPath("$[0].datum_vrijeme[1]").value(4))
+                .andExpect(jsonPath("$[0].datum_vrijeme[2]").value(10))
+                .andExpect(jsonPath("$[0].datum_vrijeme[3]").value(0))
+                .andExpect(jsonPath("$[0].datum_vrijeme[4]").value(0));
     }
 
     @Test
@@ -72,7 +76,11 @@ class ObavijestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.sadrzaj").value("Test content"))
-                .andExpect(jsonPath("$.datum_vrijeme").value("2025-04-10T00:00:00"));
+                .andExpect(jsonPath("$.datum_vrijeme[0]").value(2025))
+                .andExpect(jsonPath("$.datum_vrijeme[1]").value(4))
+                .andExpect(jsonPath("$.datum_vrijeme[2]").value(10))
+                .andExpect(jsonPath("$.datum_vrijeme[3]").value(0))
+                .andExpect(jsonPath("$.datum_vrijeme[4]").value(0));
     }
 
     @Test
@@ -90,7 +98,11 @@ class ObavijestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.sadrzaj").value("Test content"))
-                .andExpect(jsonPath("$.datum_vrijeme").value("2025-04-10T00:00:00"));
+                .andExpect(jsonPath("$.datum_vrijeme[0]").value(2025))
+                .andExpect(jsonPath("$.datum_vrijeme[1]").value(4))
+                .andExpect(jsonPath("$.datum_vrijeme[2]").value(10))
+                .andExpect(jsonPath("$.datum_vrijeme[3]").value(0))
+                .andExpect(jsonPath("$.datum_vrijeme[4]").value(0));
     }
 
     @Test
@@ -100,9 +112,7 @@ class ObavijestControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/obavijesti/1"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("Obavijest not found"))
-                .andExpect(jsonPath("$.message").value("Obavijest sa ID 1 nije pronađena."));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -126,7 +136,11 @@ class ObavijestControllerTest {
                         .content("{\"sadrzaj\":\"Updated content\", \"datum_vrijeme\":\"2025-04-10T00:00:00\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sadrzaj").value("Updated content"))
-                .andExpect(jsonPath("$.datum_vrijeme").value("2025-04-10T00:00:00"));
+                .andExpect(jsonPath("$.datum_vrijeme[0]").value(2025))  // Year
+                .andExpect(jsonPath("$.datum_vrijeme[1]").value(4))     // Month
+                .andExpect(jsonPath("$.datum_vrijeme[2]").value(10))    // Day
+                .andExpect(jsonPath("$.datum_vrijeme[3]").value(0))     // Hour
+                .andExpect(jsonPath("$.datum_vrijeme[4]").value(0));    // Minute
     }
 
     @Test

@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.SobaNotFoundException;
 import ba.unsa.etf.hospital.model.Soba;
 import ba.unsa.etf.hospital.repository.SobaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,10 +93,22 @@ class SobaServiceTest {
 
     @Test
     void testDeleteById() {
+        // Arrange
+        when(sobaRepository.existsById(1L)).thenReturn(true);
+
         // Act
         sobaService.deleteById(1L);
 
         // Assert
         verify(sobaRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdThrowsExceptionWhenSobaNotFound() {
+        // Arrange
+        when(sobaRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(SobaNotFoundException.class, () -> sobaService.deleteById(1L));
     }
 }

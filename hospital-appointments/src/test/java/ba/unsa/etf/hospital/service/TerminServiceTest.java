@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.TerminNotFoundException;
 import ba.unsa.etf.hospital.model.Termin;
 import ba.unsa.etf.hospital.repository.TerminRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,10 +96,22 @@ class TerminServiceTest {
 
     @Test
     void testDeleteById() {
+        // Arrange
+        when(terminRepository.existsById(1L)).thenReturn(true);
+
         // Act
         terminService.deleteById(1L);
 
         // Assert
         verify(terminRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdThrowsExceptionWhenTerminNotFound() {
+        // Arrange
+        when(terminRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(TerminNotFoundException.class, () -> terminService.deleteById(1L));
     }
 }

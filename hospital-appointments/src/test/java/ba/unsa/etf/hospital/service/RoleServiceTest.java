@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.RoleNotFoundException;
 import ba.unsa.etf.hospital.model.Role;
 import ba.unsa.etf.hospital.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,10 +92,22 @@ class RoleServiceTest {
 
     @Test
     void testDeleteById() {
+        // Arrange
+        when(roleRepository.existsById(1L)).thenReturn(true);
+
         // Act
         roleService.deleteById(1L);
 
         // Assert
         verify(roleRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdThrowsExceptionWhenRoleNotFound() {
+        // Arrange
+        when(roleRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(RoleNotFoundException.class, () -> roleService.deleteById(1L));
     }
 }

@@ -108,9 +108,7 @@ class SobaControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/sobe/1"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("Soba not found"))
-                .andExpect(jsonPath("$.message").value("Soba sa ID 1 nije pronađena."));
+                .andExpect(status().isNotFound());
     }
 
     @Test

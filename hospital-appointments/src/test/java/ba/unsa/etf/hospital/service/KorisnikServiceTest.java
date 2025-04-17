@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.KorisnikNotFoundException;
 import ba.unsa.etf.hospital.model.Korisnik;
 import ba.unsa.etf.hospital.repository.KorisnikRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,10 +96,22 @@ class KorisnikServiceTest {
 
     @Test
     void testDeleteById() {
+        // Arrange
+        when(korisnikRepository.existsById(1L)).thenReturn(true);
+
         // Act
         korisnikService.deleteById(1L);
 
         // Assert
         verify(korisnikRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdThrowsExceptionWhenKorisnikNotFound() {
+        // Arrange
+        when(korisnikRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(KorisnikNotFoundException.class, () -> korisnikService.deleteById(1L));
     }
 }

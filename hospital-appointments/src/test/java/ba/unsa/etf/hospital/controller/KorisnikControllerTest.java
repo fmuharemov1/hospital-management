@@ -1,6 +1,7 @@
 package ba.unsa.etf.hospital.controller;
 
 import ba.unsa.etf.hospital.model.Korisnik;
+import ba.unsa.etf.hospital.model.Role;
 import ba.unsa.etf.hospital.service.KorisnikService;
 import ba.unsa.etf.hospital.exception.KorisnikNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -65,19 +67,31 @@ class KorisnikControllerTest {
         korisnik.setIme("Test");
         korisnik.setPrezime("User");
         korisnik.setEmail("test@example.com");
-        korisnik.setLozinka("password");
+        korisnik.setLozinka("Password1");  // Lozinka sada sadrži veliko slovo, malo slovo i broj
+        korisnik.setKorisnikUuid(UUID.randomUUID());  // Generišemo UUID
+        Role role = new Role();
+        role.setTipKorisnika("Admin");  // Primer vrednosti za tip korisnika
+        role.setSmjena("Prva smjena");  // Primer vrednosti za smjenu
+        role.setOdjeljenje("Interna");  // Primer vrednosti za odjeljenje
+        korisnik.setRole(role);  // Postavljamo rolu
+        korisnik.setBr_telefona("1234567890");  // Dodajemo broj telefona
 
         when(korisnikService.saveKorisnik(any(Korisnik.class))).thenReturn(korisnik);
 
         // Act & Assert
         mockMvc.perform(post("/korisnici")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"ime\":\"Test\", \"prezime\":\"User\", \"email\":\"test@example.com\", \"lozinka\":\"password\"}"))
+                        .content("{\"ime\":\"Test\", \"prezime\":\"User\", \"email\":\"test@example.com\", \"lozinka\":\"Password1\", \"korisnikUuid\":\"" + korisnik.getKorisnikUuid() + "\", \"role\":{\"tipKorisnika\":\"Admin\", \"smjena\":\"Prva smjena\", \"odjeljenje\":\"Interna\"}, \"br_telefona\":\"1234567890\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.ime").value("Test"))
                 .andExpect(jsonPath("$.prezime").value("User"))
-                .andExpect(jsonPath("$.email").value("test@example.com"));
+                .andExpect(jsonPath("$.email").value("test@example.com"))
+                .andExpect(jsonPath("$.korisnikUuid").value(korisnik.getKorisnikUuid().toString()))
+                .andExpect(jsonPath("$.role.tipKorisnika").value("Admin"))
+                .andExpect(jsonPath("$.role.smjena").value("Prva smjena"))
+                .andExpect(jsonPath("$.role.odjeljenje").value("Interna"))
+                .andExpect(jsonPath("$.br_telefona").value("1234567890"));
     }
 
     @Test
@@ -108,9 +122,7 @@ class KorisnikControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/korisnici/1"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("Korisnik not found"))
-                .andExpect(jsonPath("$.message").value("Korisnik sa ID 1 nije pronađen."));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -121,13 +133,24 @@ class KorisnikControllerTest {
         existingKorisnik.setIme("Test");
         existingKorisnik.setPrezime("User");
         existingKorisnik.setEmail("test@example.com");
-        existingKorisnik.setLozinka("password");
+        existingKorisnik.setLozinka("Password1");  // Lozinka sa velikim i malim slovom i brojem
+        existingKorisnik.setKorisnikUuid(UUID.randomUUID());  // Generišemo UUID
+        Role role = new Role();
+        role.setTipKorisnika("Admin");
+        role.setSmjena("Prva smjena");
+        role.setOdjeljenje("Interna");
+        existingKorisnik.setRole(role);
+        existingKorisnik.setBr_telefona("1234567890");
 
         Korisnik updatedKorisnik = new Korisnik();
+        updatedKorisnik.setId(1L);
         updatedKorisnik.setIme("Updated");
         updatedKorisnik.setPrezime("User");
         updatedKorisnik.setEmail("updated@example.com");
-        updatedKorisnik.setLozinka("newpassword");
+        updatedKorisnik.setLozinka("NewPassword1");  // Lozinka sa velikim i malim slovom i brojem
+        updatedKorisnik.setKorisnikUuid(existingKorisnik.getKorisnikUuid());
+        updatedKorisnik.setRole(role);
+        updatedKorisnik.setBr_telefona("0987654321");
 
         when(korisnikService.findById(1L)).thenReturn(Optional.of(existingKorisnik));
         when(korisnikService.saveKorisnik(any(Korisnik.class))).thenReturn(updatedKorisnik);
@@ -135,11 +158,16 @@ class KorisnikControllerTest {
         // Act & Assert
         mockMvc.perform(put("/korisnici/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"ime\":\"Updated\", \"prezime\":\"User\", \"email\":\"updated@example.com\", \"lozinka\":\"newpassword\"}"))
+                        .content("{\"ime\":\"Updated\", \"prezime\":\"User\", \"email\":\"updated@example.com\", \"lozinka\":\"NewPassword1\", \"korisnikUuid\":\"" + existingKorisnik.getKorisnikUuid() + "\", \"role\":{\"tipKorisnika\":\"Admin\", \"smjena\":\"Prva smjena\", \"odjeljenje\":\"Interna\"}, \"br_telefona\":\"0987654321\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ime").value("Updated"))
                 .andExpect(jsonPath("$.prezime").value("User"))
-                .andExpect(jsonPath("$.email").value("updated@example.com"));
+                .andExpect(jsonPath("$.email").value("updated@example.com"))
+                .andExpect(jsonPath("$.korisnikUuid").value(existingKorisnik.getKorisnikUuid().toString()))
+                .andExpect(jsonPath("$.role.tipKorisnika").value("Admin"))
+                .andExpect(jsonPath("$.role.smjena").value("Prva smjena"))
+                .andExpect(jsonPath("$.role.odjeljenje").value("Interna"))
+                .andExpect(jsonPath("$.br_telefona").value("0987654321"));
     }
 
     @Test

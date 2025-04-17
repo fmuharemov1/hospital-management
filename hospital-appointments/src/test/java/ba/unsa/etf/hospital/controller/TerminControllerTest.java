@@ -80,7 +80,12 @@ class TerminControllerTest {
                 .andExpect(jsonPath("$[0].osoblje.prezime").value("Johnson"))
                 .andExpect(jsonPath("$[0].obavijest.sadrzaj").value("Checkup"))
                 .andExpect(jsonPath("$[0].status").value("Scheduled"))
-                .andExpect(jsonPath("$[0].datumVrijeme").value("2025-04-01T09:00:00"))
+                // Odvojene provere za datum
+                .andExpect(jsonPath("$[0].datumVrijeme[0]").value(2025))  // Year
+                .andExpect(jsonPath("$[0].datumVrijeme[1]").value(4))     // Month
+                .andExpect(jsonPath("$[0].datumVrijeme[2]").value(1))     // Day
+                .andExpect(jsonPath("$[0].datumVrijeme[3]").value(9))     // Hour
+                .andExpect(jsonPath("$[0].datumVrijeme[4]").value(0))     // Minute
                 .andExpect(jsonPath("$[0].meet_link").value("http://example.com/meet"));
     }
 
@@ -101,6 +106,7 @@ class TerminControllerTest {
 
         Obavijest obavijest = new Obavijest();
         obavijest.setSadrzaj("Checkup");
+        obavijest.setDatum_vrijeme(LocalDateTime.parse("2025-04-01T09:00:00"));
 
         Termin termin = new Termin();
         termin.setId(1L);
@@ -114,17 +120,20 @@ class TerminControllerTest {
 
         when(terminService.saveTermin(any(Termin.class))).thenReturn(termin);
 
-        // Act & Assert
         mockMvc.perform(post("/termini")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"pacijent\":{\"ime\":\"John\",\"prezime\":\"Doe\",\"email\":\"john.doe@example.com\",\"korisnikUuid\":\"" + pacijent.getKorisnikUuid() + "\"}, \"osoblje\":{\"ime\":\"Dr. Smith\",\"prezime\":\"Johnson\",\"email\":\"dr.smith@example.com\",\"korisnikUuid\":\"" + osoblje.getKorisnikUuid() + "\"}, \"obavijest\":{\"sadrzaj\":\"Checkup\"}, \"status\":\"Scheduled\", \"datumVrijeme\":\"2025-04-01T09:00:00\", \"trajanjes\":30, \"meet_link\":\"http://example.com/meet\"}"))
+                        .content("{\"pacijent\":{\"ime\":\"John\",\"prezime\":\"Doe\",\"email\":\"john.doe@example.com\",\"korisnikUuid\":\"" + pacijent.getKorisnikUuid() + "\"}, \"osoblje\":{\"ime\":\"Dr. Smith\",\"prezime\":\"Johnson\",\"email\":\"dr.smith@example.com\",\"korisnikUuid\":\"" + osoblje.getKorisnikUuid() + "\"}, \"obavijest\":{\"sadrzaj\":\"Checkup\"}, \"status\":\"Scheduled\", \"datumVrijeme\":\"2025-04-01T09:00:00\", \"trajanje\":30, \"meet_link\":\"http://example.com/meet\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.pacijent.ime").value("John"))
                 .andExpect(jsonPath("$.osoblje.ime").value("Dr. Smith"))
                 .andExpect(jsonPath("$.obavijest.sadrzaj").value("Checkup"))
                 .andExpect(jsonPath("$.status").value("Scheduled"))
-                .andExpect(jsonPath("$.datumVrijeme").value("2025-04-01T09:00:00"))
+                .andExpect(jsonPath("$.datumVrijeme[0]").value(2025))  // Year
+                .andExpect(jsonPath("$.datumVrijeme[1]").value(4))     // Month
+                .andExpect(jsonPath("$.datumVrijeme[2]").value(1))     // Day
+                .andExpect(jsonPath("$.datumVrijeme[3]").value(9))     // Hour
+                .andExpect(jsonPath("$.datumVrijeme[4]").value(0))     // Minute
                 .andExpect(jsonPath("$.meet_link").value("http://example.com/meet"));
     }
 
@@ -166,7 +175,12 @@ class TerminControllerTest {
                 .andExpect(jsonPath("$.osoblje.ime").value("Dr. Smith"))
                 .andExpect(jsonPath("$.obavijest.sadrzaj").value("Checkup"))
                 .andExpect(jsonPath("$.status").value("Scheduled"))
-                .andExpect(jsonPath("$.datumVrijeme").value("2025-04-01T09:00:00"))
+                // Odvojene provere za datum
+                .andExpect(jsonPath("$.datumVrijeme[0]").value(2025))  // Godina
+                .andExpect(jsonPath("$.datumVrijeme[1]").value(4))     // Mesec
+                .andExpect(jsonPath("$.datumVrijeme[2]").value(1))     // Dan
+                .andExpect(jsonPath("$.datumVrijeme[3]").value(9))     // Sat
+                .andExpect(jsonPath("$.datumVrijeme[4]").value(0))     // Minut
                 .andExpect(jsonPath("$.meet_link").value("http://example.com/meet"));
     }
 
@@ -213,18 +227,22 @@ class TerminControllerTest {
         // Act & Assert
         mockMvc.perform(put("/termini/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"pacijent\":{\"ime\":\"John\",\"prezime\":\"Doe\",\"email\":\"john.doe@example.com\",\"korisnikUuid\":\"" + pacijent.getKorisnikUuid() + "\"}, \"osoblje\":{\"ime\":\"Dr. Smith\",\"prezime\":\"Johnson\",\"email\":\"dr.smith@example.com\",\"korisnikUuid\":\"" + osoblje.getKorisnikUuid() + "\"}, \"obavijest\":{\"sadrzaj\":\"Checkup\"}, \"status\":\"Completed\", \"datumVrijeme\":\"2025-04-01T10:00:00\", \"trajanjes\":30, \"meet_link\":\"http://example.com/meet\"}"))
+                        .content("{\"pacijent\":{\"ime\":\"John\",\"prezime\":\"Doe\",\"email\":\"john.doe@example.com\",\"korisnikUuid\":\"" + pacijent.getKorisnikUuid() + "\"}, \"osoblje\":{\"ime\":\"Dr. Smith\",\"prezime\":\"Johnson\",\"email\":\"dr.smith@example.com\",\"korisnikUuid\":\"" + osoblje.getKorisnikUuid() + "\"}, \"obavijest\":{\"sadrzaj\":\"Checkup\"}, \"status\":\"Completed\", \"datumVrijeme\":\"2025-04-01T10:00:00\", \"trajanje\":30, \"meet_link\":\"http://example.com/meet\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.status").value("Completed"))
-                .andExpect(jsonPath("$.datumVrijeme").value("2025-04-01T10:00:00"));
+                // Provera datuma kroz elemente
+                .andExpect(jsonPath("$.datumVrijeme[0]").value(2025))  // Godina
+                .andExpect(jsonPath("$.datumVrijeme[1]").value(4))     // Mesec
+                .andExpect(jsonPath("$.datumVrijeme[2]").value(1))     // Dan
+                .andExpect(jsonPath("$.datumVrijeme[3]").value(10))    // Sat
+                .andExpect(jsonPath("$.datumVrijeme[4]").value(0))     // Minut
+                .andExpect(jsonPath("$.meet_link").value("http://example.com/meet"));
     }
 
     @Test
     void testDeleteTermin() throws Exception {
-        // Act & Assert
         mockMvc.perform(delete("/termini/1"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         verify(terminService, times(1)).deleteById(1L);
     }

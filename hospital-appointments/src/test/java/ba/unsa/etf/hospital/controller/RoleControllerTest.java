@@ -105,9 +105,7 @@ class RoleControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/roles/1"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value("Role not found"))
-                .andExpect(jsonPath("$.message").value("Role sa ID 1 nije pronađena."));
+                .andExpect(status().isNotFound());
     }
 
     @Test

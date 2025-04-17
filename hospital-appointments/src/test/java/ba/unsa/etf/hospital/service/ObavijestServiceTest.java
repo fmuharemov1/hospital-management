@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.exception.ObavijestNotFoundException;
 import ba.unsa.etf.hospital.model.Obavijest;
 import ba.unsa.etf.hospital.repository.ObavijestRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,10 +94,22 @@ class ObavijestServiceTest {
 
     @Test
     void testDeleteById() {
+        // Arrange
+        when(obavijestRepository.existsById(1L)).thenReturn(true);
+
         // Act
         obavijestService.deleteById(1L);
 
         // Assert
         verify(obavijestRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteByIdThrowsExceptionWhenObavijestNotFound() {
+        // Arrange
+        when(obavijestRepository.existsById(1L)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(ObavijestNotFoundException.class, () -> obavijestService.deleteById(1L));
     }
 }
