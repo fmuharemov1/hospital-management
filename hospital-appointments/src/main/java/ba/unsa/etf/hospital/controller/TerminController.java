@@ -54,8 +54,8 @@ public class TerminController {
         terminService.deleteById(id);
     }
 
-    @PostMapping("/createWithNotification")
-    public Termin createTerminWithNotification(@Valid @RequestBody Termin termin) {
-        return terminService.createTerminWithNotification(termin);
+    @PostMapping("/kreirajSaNotifikacijom")
+    public Termin kreirajTerminSaNotifikacijom(@Valid @RequestBody Termin termin) {
+        return terminService.kreirajTerminSaNotifikacijom(termin);
     }
 }

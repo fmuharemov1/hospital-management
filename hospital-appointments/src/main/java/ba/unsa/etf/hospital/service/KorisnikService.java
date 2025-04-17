@@ -61,7 +61,7 @@ public class KorisnikService {
         long brojPacijenataUSobi = korisnikRepository.countByRole_Soba_Id(sobaId);
 
         if (brojPacijenataUSobi >= soba.getKapacitet()) {
-            soba.setStatus("Zauzeta");
+            soba.setStatus("Popunjena");
             sobaRepository.save(soba);
             return ResponseEntity.badRequest().body("Soba je popunjena.");
         }
@@ -72,7 +72,7 @@ public class KorisnikService {
 
         // Ako je sada soba popunjena, ažuriraj status
         if (brojPacijenataUSobi + 1 >= soba.getKapacitet()) {
-            soba.setStatus("Zauzeta");
+            soba.setStatus("Popunjena");
             sobaRepository.save(soba);
         }
 

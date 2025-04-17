@@ -57,7 +57,7 @@ public class TerminService {
         }
      */
     @Transactional
-    public Termin createTerminWithNotification(Termin termin) {
+    public Termin kreirajTerminSaNotifikacijom(Termin termin) {
         // Prvo kreiramo obavijest
         Obavijest obavijest = new Obavijest();
 

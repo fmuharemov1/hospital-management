@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.controller;
 
+import ba.unsa.etf.hospital.dto.PacijentIdsDTO;
 import ba.unsa.etf.hospital.model.Soba;
 import ba.unsa.etf.hospital.service.SobaService;
 import jakarta.validation.Valid;
@@ -41,7 +42,6 @@ public class SobaController {
             soba.setBroj_sobe(newSoba.getBroj_sobe());
             soba.setStatus(newSoba.getStatus());
             soba.setKapacitet(newSoba.getKapacitet());
-            soba.setKorisnik(newSoba.getKorisnik());
             return sobaService.saveSoba(soba);
         }).orElseGet(() -> sobaService.saveSoba(newSoba));
     }
@@ -49,5 +49,15 @@ public class SobaController {
     @DeleteMapping("/{id}")
     public void deleteSoba(@PathVariable Long id) {
         sobaService.deleteById(id);
+    }
+
+    @PostMapping("/{sobaId}/dodaj-pacijente")
+    public void dodajPacijenteUSobu(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+        sobaService.dodajPacijenteUSobu(sobaId, request.getPacijentIds());
+    }
+
+    @PostMapping("/{sobaId}/otpusti-pacijente")
+    public void otpustiPacijenteIzSobe(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+        sobaService.otpustiPacijenteIzSobe(sobaId, request.getPacijentIds());
     }
 }
