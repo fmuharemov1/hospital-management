@@ -53,4 +53,9 @@ public class TerminController {
     public void deleteTermin(@PathVariable Long id) {
         terminService.deleteById(id);
     }
+
+    @PostMapping("/createWithNotification")
+    public Termin createTerminWithNotification(@Valid @RequestBody Termin termin) {
+        return terminService.createTerminWithNotification(termin);
+    }
 }
