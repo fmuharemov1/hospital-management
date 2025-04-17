@@ -1,9 +1,6 @@
 package ba.unsa.etf.hospital.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -19,6 +16,18 @@ public class Role {
     private String smjena;
     @NotBlank(message = "Polje odjeljenje ne smije biti prazno")
     private String odjeljenje;
+
+    @ManyToOne
+    @JoinColumn(name = "soba_id")
+    private Soba soba;
+
+    public Soba getSoba() {
+        return soba;
+    }
+
+    public void setSoba(Soba soba) {
+        this.soba = soba;
+    }
 
     public Long getId() {
         return id;

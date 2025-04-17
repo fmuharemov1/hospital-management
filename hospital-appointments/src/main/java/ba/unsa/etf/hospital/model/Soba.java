@@ -23,10 +23,6 @@ public class Soba {
     @NotNull(message = "Polje kapacitet ne smije biti null")
     private int kapacitet;
 
-    @ManyToOne
-    @JoinColumn(name = "pacijent_id", referencedColumnName = "id", nullable = false)
-    private Korisnik korisnik;
-
     public Long getId() {
         return id;
     }
@@ -57,13 +53,5 @@ public class Soba {
 
     public void setKapacitet(int kapacitet) {
         this.kapacitet = kapacitet;
-    }
-
-    public Korisnik getKorisnik() {
-        return korisnik;
-    }
-
-    public void setKorisnik(Korisnik korisnik) {
-        this.korisnik = korisnik;
     }
 }

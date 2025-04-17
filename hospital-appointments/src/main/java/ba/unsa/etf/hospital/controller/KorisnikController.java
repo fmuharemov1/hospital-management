@@ -52,4 +52,11 @@ public class KorisnikController {
     public void deleteKorisnik(@PathVariable Long id) {
         korisnikService.deleteById(id);
     }
+
+    @PatchMapping("/korisnici/{id}/dodijeli-sobu")
+    public ResponseEntity<?> dodijeliSobuPacijentu(
+            @PathVariable Long id,
+            @RequestParam Long sobaId) {
+        return korisnikService.dodijeliSobuPacijentu(id, sobaId);
+    }
 }
