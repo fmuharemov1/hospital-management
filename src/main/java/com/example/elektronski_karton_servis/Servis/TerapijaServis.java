@@ -12,7 +12,7 @@ import java.util.Optional;
 public class TerapijaServis {
 
     @Autowired
-    private TerapijaRepository terapijaRepository;
+    TerapijaRepository terapijaRepository;
 
     public List<Terapija> getAllTerapije() {
         return terapijaRepository.findAll();

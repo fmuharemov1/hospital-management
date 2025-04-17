@@ -18,38 +18,38 @@ public class Korisnik {
     private Integer id;
 
     @NotBlank(message = "Ime je obavezno")
-    @Column(name="ime")
+    @Column(name = "ime")
     private String ime;
 
 
     @NotBlank(message = "Prezime je obavezno")
-    @Column(name="prezime")
+    @Column(name = "prezime")
     private String prezime;
 
 
     @NotBlank(message = "Prezime je obavezno")
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
 
     @NotBlank(message = "Lozinka je obavezna")
-    @Column(name="lozinka")
+    @Column(name = "lozinka")
     private String lozinka;
 
-    @Column(name="br_telefona")
+    @Column(name = "br_telefona")
     private String brojTelefona;
 
-    @Column(name="adresa")
+    @Column(name = "adresa")
     private String adresa;
 
-    @Column(name="roleId")
+    @Column(name = "roleId")
     private Integer roleId;
 
-    @Column(name="korisnik_uuid")
-    private UUID korisnikUuid;
+    @Column(name = "korisnik_uuid")
+    private Integer korisnikUuid;
 
     public Korisnik() {
-        this.korisnikUuid = UUID.randomUUID();
+
     }
 
     public Korisnik(String ime, String prezime, String email, String lozinka, String brojTelefona, String adresa, Integer roleId) {
@@ -60,7 +60,13 @@ public class Korisnik {
         this.brojTelefona = brojTelefona;
         this.adresa = adresa;
         this.roleId = roleId;
-        this.korisnikUuid = UUID.randomUUID();
+    }
+
+    @PostPersist
+    public void setUuidAfterPersist() {
+        if (this.korisnikUuid == null) {
+            this.korisnikUuid = this.id;
+        }
     }
 }
 

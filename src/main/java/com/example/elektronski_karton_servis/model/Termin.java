@@ -28,7 +28,7 @@ public class Termin {
     private LocalDateTime datumVrijeme;
 
     @Column(name="termin_uuid")
-    private Integer termintUuid;
+    private Integer terminUuid;
 
     public Termin() {
 

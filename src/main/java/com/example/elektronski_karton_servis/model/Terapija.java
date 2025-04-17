@@ -19,14 +19,14 @@ public class Terapija {
     private Integer id;
 
     @Column(name="osoblje_uuid")
-    private int osobljeUuid;
+    private Integer osobljeUuid;
 
     @NotBlank(message = "Naziv je obavezan")
     @Column(name="naziv")
     private String naziv;
 
     @Column(name="dijagnoza_id")
-    private int dijagnoza_id;
+    private Integer dijagnoza_id;
 
     @NotBlank(message = "Opis je obavezan")
     @Column(name="opis")
@@ -43,8 +43,9 @@ public class Terapija {
         this.datumPocetka = LocalDateTime.now();
     }
 
-    public Terapija(UUID osobljeUuid, String naziv, String opis, LocalDateTime datumZavrsetka) {
+    public Terapija(Integer osobljeUuid, String naziv, String opis, LocalDateTime datumZavrsetka) {
 
+        this.osobljeUuid = osobljeUuid;
         this.naziv = naziv;
         this.opis = opis;
         this.datumPocetka = LocalDateTime.now();

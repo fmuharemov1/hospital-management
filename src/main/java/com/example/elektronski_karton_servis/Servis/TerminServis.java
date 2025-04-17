@@ -13,7 +13,7 @@ import java.util.Optional;
 public class TerminServis {
 
     @Autowired
-    private TerminRepository terminRepository;
+    TerminRepository terminRepository;
 
     public List<Termin> getAllTermini() {
         return terminRepository.findAll();

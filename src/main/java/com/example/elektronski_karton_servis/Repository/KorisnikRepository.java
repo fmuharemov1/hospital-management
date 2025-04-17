@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 @Repository
 public interface KorisnikRepository extends JpaRepository<Korisnik, Integer> {
-    Optional<Korisnik> findByKorisnikUuid(UUID korisnikUuid);
+    Optional<Korisnik> findByKorisnikUuid(Integer korisnikUuid);
     // Custom upiti (nisu automatski generirani)
     List<Korisnik> findByImeIgnoreCaseAndPrezimeIgnoreCase(String ime, String prezime);
 

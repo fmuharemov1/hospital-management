@@ -23,7 +23,7 @@ public class Dijagnoza {
     private Integer kartonId;
 
     @Column(name="osoblje_uuid")
-    private int osobljeUuid;
+    private Integer osobljeUuid;
 
     @NotBlank(message = "Naziv je obavezan")
     @Column(name="naziv")

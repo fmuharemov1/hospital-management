@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Setter
@@ -42,6 +43,9 @@ public class Karton {
         this.brojKartona = brojKartona;
         System.out.println("Generisani UUID: " + this.pacijentUuid);
     }
+
+
+
 }
 
 

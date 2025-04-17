@@ -12,7 +12,7 @@ import java.util.Optional;
 public class RoleServis {
 
     @Autowired
-    private RoleRepository roleRepository;
+    RoleRepository roleRepository;
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
