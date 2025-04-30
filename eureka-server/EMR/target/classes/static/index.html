@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektronski Medicinski Karton</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Online konsultacije</a></li>
+            <li><a href="#">Korisnički račun</a></li>
+            <li><a href="#">E karton</a></li>
+            <li><a href="#">Termini</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <aside>
+        <h2>NOVI PACIJENT</h2>
+        <button id="kreirajKartonBtn">Kreiraj karton</button>
+        <button>Pretraži pacijenta</button>
+    </aside>
+
+    <main>
+        <section class="patient-info">
+            <form id="pacijentForm">
+                <label for="ime">Ime:</label>
+                <input type="text" id="ime" name="ime"><br><br>
+
+                <label for="prezime">Prezime:</label>
+                <input type="text" id="prezime" name="prezime"><br><br>
+
+                <label for="datumRodjenja">Datum rođenja:</label>
+                <input type="date" id="datumRodjenja" name="datumRodjenja"><br><br>
+
+                <button type="button" onclick="kreiranjeKartona()">Kreiraj kartona</button>
+            </form>
+            <div id="rezultat"></div>
+        </section>
+
+        <section class="medical-data">
+        </section>
+
+        <section class="lab-results">
+        </section>
+    </main>
+
+    <aside class="right-sidebar">
+        <h2>Zdravstveni problemi</h2>
+    </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
