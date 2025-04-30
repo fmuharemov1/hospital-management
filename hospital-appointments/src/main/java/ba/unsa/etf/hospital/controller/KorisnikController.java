@@ -1,0 +1,62 @@
+package ba.unsa.etf.hospital.controller;
+
+import ba.unsa.etf.hospital.model.Korisnik;
+import ba.unsa.etf.hospital.service.KorisnikService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ba.unsa.etf.hospital.exception.KorisnikNotFoundException;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/korisnici")
+public class KorisnikController {
+    private final KorisnikService korisnikService;
+
+    public KorisnikController(KorisnikService korisnikService) {
+        this.korisnikService = korisnikService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Korisnik>> getAllKorisnici() {
+        List<Korisnik> korisnici = korisnikService.getAllKorisnici();
+        return ResponseEntity.ok(korisnici);
+    }
+
+    @PostMapping
+    public Korisnik createKorisnik(@Valid @RequestBody Korisnik korisnik) {
+        return korisnikService.saveKorisnik(korisnik);
+    }
+
+    @GetMapping("/{id}")
+    public Korisnik one(@PathVariable Long id) {
+        return korisnikService.findById(id)
+                .orElseThrow(() -> new KorisnikNotFoundException(id));
+    }
+
+    @PutMapping("/{id}")
+    public Korisnik replaceKorisnik(@Valid @RequestBody Korisnik newKorisnik, @PathVariable Long id) {
+        return korisnikService.findById(id).map(korisnik -> {
+            korisnik.setIme(newKorisnik.getIme());
+            korisnik.setPrezime(newKorisnik.getPrezime());
+            korisnik.setEmail(newKorisnik.getEmail());
+            korisnik.setLozinka(newKorisnik.getLozinka());
+            korisnik.setBr_telefona(newKorisnik.getBr_telefona());
+            korisnik.setRole(newKorisnik.getRole());
+            return korisnikService.saveKorisnik(korisnik);
+        }).orElseGet(() -> korisnikService.saveKorisnik(newKorisnik));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteKorisnik(@PathVariable Long id) {
+        korisnikService.deleteById(id);
+    }
+
+    @PatchMapping("/korisnici/{id}/dodijeli-sobu")
+    public ResponseEntity<?> dodijeliSobuPacijentu(
+            @PathVariable Long id,
+            @RequestParam Long sobaId) {
+        return korisnikService.dodijeliSobuPacijentu(id, sobaId);
+    }
+}
