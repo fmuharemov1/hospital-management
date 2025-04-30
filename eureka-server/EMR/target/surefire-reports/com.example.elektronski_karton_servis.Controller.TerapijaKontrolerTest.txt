@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.example.elektronski_karton_servis.Controller.TerapijaKontrolerTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.577 s -- in com.example.elektronski_karton_servis.Controller.TerapijaKontrolerTest
