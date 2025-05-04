@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/EMR_TEST
+    username: root
+    password: tvoja_lozinka
+  jpa:
+    hibernate:
+      ddl-auto: none
