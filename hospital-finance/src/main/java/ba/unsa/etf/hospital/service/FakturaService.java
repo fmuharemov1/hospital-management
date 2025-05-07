@@ -12,19 +12,11 @@ import java.util.Optional;
 
 @Service
 public class FakturaService {
-   // private ObjectMapper objectMapper = new ObjectMapper();
     private final FakturaRepository fakturaRepository;
 
     public FakturaService(FakturaRepository fakturaRepository) {
         this.fakturaRepository = fakturaRepository;
     }
-
-/*
-    @Autowired
-    public FakturaService(FakturaRepository fakturaRepository, ObjectMapper objectMapper) {
-        this.fakturaRepository = fakturaRepository;
-        this.objectMapper = objectMapper;
-    }*/
 
     public List<Faktura> getAllFakture() {
         return fakturaRepository.findAll();
@@ -54,17 +46,5 @@ public class FakturaService {
                 .orElseThrow(() -> new FakturaNotFoundException(id));
         fakturaRepository.deleteById(id);
     }
-/*
-    public Faktura applyPatchToFaktura(Long id, JsonPatch patch)
-            throws JsonPatchException, JsonProcessingException {
 
-        Faktura faktura = fakturaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Faktura nije pronađena"));
-
-        JsonNode fakturaNode = objectMapper.convertValue(faktura, JsonNode.class);
-        JsonNode patched = patch.apply(fakturaNode);
-        Faktura patchedFaktura = objectMapper.treeToValue(patched, Faktura.class);
-
-        return fakturaRepository.save(patchedFaktura);
-    }*/
 }
