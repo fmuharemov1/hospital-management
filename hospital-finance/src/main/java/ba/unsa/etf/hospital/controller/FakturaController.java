@@ -49,18 +49,6 @@ public class FakturaController {
             throw new FakturaNotFoundException(id);  // Ovdje se baca specifična greška koja vraća 404
         }
     }
-
-    /*
-    @PatchMapping(path = "/fakture/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<Faktura> patchFaktura(@PathVariable Long id, @RequestBody JsonPatch patch) {
-        try {
-            Faktura updated = fakturaService.applyPatchToFaktura(id, patch);
-            return ResponseEntity.ok(updated);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    */
 @PostMapping("/batch")
 public ResponseEntity<List<Faktura>> saveBatchFakture(@RequestBody List<Faktura> fakture) {
     try {
