@@ -4,6 +4,7 @@ import ba.unsa.etf.hospital.exception.TerminNotFoundException;
 import ba.unsa.etf.hospital.model.Korisnik;
 import ba.unsa.etf.hospital.model.Obavijest;
 import ba.unsa.etf.hospital.model.Termin;
+import ba.unsa.etf.hospital.repository.KorisnikRepository;
 import ba.unsa.etf.hospital.repository.ObavijestRepository;
 import ba.unsa.etf.hospital.repository.TerminRepository;
 import jakarta.transaction.Transactional;
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class TerminService {
     private final TerminRepository terminRepository;
     private final ObavijestRepository obavijestRepository;
-    public TerminService(TerminRepository terminRepository, ObavijestRepository obavijestRepository) {
+    private final KorisnikRepository korisnikRepository;
+    public TerminService(TerminRepository terminRepository, ObavijestRepository obavijestRepository, KorisnikRepository korisnikRepository) {
         this.terminRepository = terminRepository;
         this.obavijestRepository = obavijestRepository;
+        this.korisnikRepository = korisnikRepository;
     }
 
     public List<Termin> getAllTermini(){
@@ -70,7 +73,8 @@ public class TerminService {
         String vrijemeTermina = termin.getDatumVrijeme().format(formatter);
 
         // Generisanje sadržaja
-        Korisnik doktor = termin.getOsoblje();
+        Korisnik doktor = korisnikRepository.findById(termin.getOsoblje().getId())
+                .orElseThrow(() -> new RuntimeException("Doktor nije pronađen"));
         String sadrzaj = "Podsjetnik: Sutra imate pregled kod " +
                 doktor.getIme() + " " + doktor.getPrezime() +
                 " u " + vrijemeTermina + ".";

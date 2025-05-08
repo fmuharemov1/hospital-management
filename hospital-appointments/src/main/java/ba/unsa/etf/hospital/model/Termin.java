@@ -26,7 +26,6 @@ public class Termin {
     @JoinColumn(name = "osoblje_id")
     private Korisnik osoblje;
 
-    @NotNull(message = "Polje obavijest_id ne smije biti prazno")
     @OneToOne
     @JoinColumn(name = "obavijest_id")
     private Obavijest obavijest;

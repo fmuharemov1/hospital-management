@@ -35,7 +35,6 @@ class SobaServiceTest {
         soba.setBroj_sobe("101");
         soba.setStatus("Occupied");
         soba.setKapacitet(2);
-        soba.setKorisnik(null);  // assuming you set the korisnik appropriately
     }
 
     @Test
