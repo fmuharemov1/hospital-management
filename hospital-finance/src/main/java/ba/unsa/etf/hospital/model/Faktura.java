@@ -25,4 +25,8 @@ public class Faktura {
     @Size(max = 255, message = "Polje metod može imati maksimalno 255 karaktera")
     @NotBlank(message = "Polje metod ne smije biti prazno")
     private String metod;
+
+    public Long getTerminId() {
+        return this.id;
+    }
 }
