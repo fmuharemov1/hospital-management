@@ -12,8 +12,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class RoleServiceTest {
 
@@ -79,6 +79,37 @@ class RoleServiceTest {
     }
 
     @Test
+<<<<<<< HEAD:hospital-finance/src/test/java/ba/unsa/etf/hospital/service/RoleServiceTest.java
+    public void testDeleteById_Role() {
+        Long id = 1L;
+
+        Role role = new Role();
+        role.setId(id);
+
+        when(roleRepository.findById(id)).thenReturn(Optional.of(role));
+        doNothing().when(roleRepository).deleteById(id);
+
+        roleService.deleteById(id);
+
+        verify(roleRepository, times(1)).findById(id);
+        verify(roleRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    public void testDeleteById_Role_NotFound() {
+        Long id = 1L;
+
+        when(roleRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(RoleNotFoundException.class, () -> roleService.deleteById(id));
+
+        verify(roleRepository, times(1)).findById(id);
+        verify(roleRepository, never()).deleteById(id);
+    }
+
+
+}
+=======
     void testFindById_NotFound() {
         // Arrange
         when(roleRepository.findById(1L)).thenReturn(Optional.empty());
@@ -111,3 +142,4 @@ class RoleServiceTest {
         assertThrows(RoleNotFoundException.class, () -> roleService.deleteById(1L));
     }
 }
+>>>>>>> appointments-branch:hospital-appointments/src/test/java/ba/unsa/etf/hospital/service/RoleServiceTest.java

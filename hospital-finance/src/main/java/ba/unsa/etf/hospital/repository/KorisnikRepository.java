@@ -1,0 +1,7 @@
+package ba.unsa.etf.hospital.repository;
+
+import ba.unsa.etf.hospital.model.Korisnik;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface KorisnikRepository extends JpaRepository<Korisnik, Long> {
+}

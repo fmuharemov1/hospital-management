@@ -29,9 +29,17 @@ public class RoleService {
     }
 
     public void deleteById(Long id) {
+<<<<<<< HEAD:hospital-finance/src/main/java/ba/unsa/etf/hospital/service/RoleService.java
+        // Provjeri da li role postoji
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException(id));  // Ako role nije pronađena, baci izuzetak
+
+        roleRepository.deleteById(id);  // Ako je pronađena, obriši
+=======
         if (!roleRepository.existsById(id)) {
             throw new RoleNotFoundException(id);
         }
         roleRepository.deleteById(id);
+>>>>>>> appointments-branch:hospital-appointments/src/main/java/ba/unsa/etf/hospital/service/RoleService.java
     }
 }
