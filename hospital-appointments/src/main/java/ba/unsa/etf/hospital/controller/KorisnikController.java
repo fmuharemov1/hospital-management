@@ -54,7 +54,7 @@ public class KorisnikController {
         korisnikService.deleteById(id);
     }
 
-    @PatchMapping("/korisnici/{id}/dodijeliSobu")
+    @PatchMapping("/{id}/dodijeliSobu")
     public ResponseEntity<?> dodijeliSobuPacijentu(
             @PathVariable Long id,
             @RequestBody JsonPatch patch) {
