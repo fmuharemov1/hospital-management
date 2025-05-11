@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ba.unsa.etf.hospital.exception.SobaNotFoundException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/sobe")
@@ -52,12 +53,15 @@ public class SobaController {
     }
 
     @PostMapping("/{sobaId}/dodaj-pacijente")
-    public void dodajPacijenteUSobu(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+    public ResponseEntity<?> dodajPacijenteUSobu(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+        System.out.println("Pozvana metoda dodajPacijenteUSobu za sobu " + sobaId);
         sobaService.dodajPacijenteUSobu(sobaId, request.getPacijentIds());
+        return ResponseEntity.ok().body(Map.of("message", "Pacijenti uspješno dodani u sobu"));
     }
 
     @PostMapping("/{sobaId}/otpusti-pacijente")
-    public void otpustiPacijenteIzSobe(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+    public ResponseEntity<?> otpustiPacijenteIzSobe(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
         sobaService.otpustiPacijenteIzSobe(sobaId, request.getPacijentIds());
+        return ResponseEntity.ok().body(Map.of("message", "Pacijenti uspješno otpušteni iz sobe"));
     }
 }

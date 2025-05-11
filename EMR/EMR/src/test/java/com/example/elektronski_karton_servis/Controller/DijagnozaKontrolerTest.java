@@ -5,7 +5,7 @@ import com.example.elektronski_karton_servis.Repository.DijagnozaRepository;
 import com.example.elektronski_karton_servis.Servis.DijagnozaServis;
 import com.example.elektronski_karton_servis.model.Dijagnoza;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;

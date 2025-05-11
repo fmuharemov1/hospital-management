@@ -2,6 +2,7 @@ package ba.unsa.etf.hospital.controller;
 
 import ba.unsa.etf.hospital.model.Korisnik;
 import ba.unsa.etf.hospital.service.KorisnikService;
+import com.github.fge.jsonpatch.JsonPatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,10 +54,10 @@ public class KorisnikController {
         korisnikService.deleteById(id);
     }
 
-    @PatchMapping("/korisnici/{id}/dodijeli-sobu")
+    @PatchMapping("/{id}/dodijeliSobu")
     public ResponseEntity<?> dodijeliSobuPacijentu(
             @PathVariable Long id,
-            @RequestParam Long sobaId) {
-        return korisnikService.dodijeliSobuPacijentu(id, sobaId);
+            @RequestBody JsonPatch patch) {
+        return korisnikService.patchKorisnik(id, patch);
     }
 }

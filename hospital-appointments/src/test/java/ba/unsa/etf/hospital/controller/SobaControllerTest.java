@@ -44,7 +44,6 @@ class SobaControllerTest {
         soba.setBroj_sobe("101");
         soba.setStatus("Available");
         soba.setKapacitet(2);
-        soba.setKorisnik(null); // Assume no user for simplicity
 
         when(sobaService.getAllSobe()).thenReturn(Collections.singletonList(soba));
 
@@ -65,7 +64,6 @@ class SobaControllerTest {
         soba.setBroj_sobe("101");
         soba.setStatus("Available");
         soba.setKapacitet(2);
-        soba.setKorisnik(null); // Assume no user for simplicity
 
         when(sobaService.saveSoba(any(Soba.class))).thenReturn(soba);
 
@@ -88,7 +86,6 @@ class SobaControllerTest {
         soba.setBroj_sobe("101");
         soba.setStatus("Available");
         soba.setKapacitet(2);
-        soba.setKorisnik(null); // Assume no user for simplicity
 
         when(sobaService.findById(1L)).thenReturn(Optional.of(soba));
 
@@ -119,13 +116,11 @@ class SobaControllerTest {
         existingSoba.setBroj_sobe("101");
         existingSoba.setStatus("Available");
         existingSoba.setKapacitet(2);
-        existingSoba.setKorisnik(null); // Assume no user for simplicity
 
         Soba updatedSoba = new Soba();
         updatedSoba.setBroj_sobe("102");
         updatedSoba.setStatus("Occupied");
         updatedSoba.setKapacitet(3);
-        updatedSoba.setKorisnik(null); // Assume no user for simplicity
 
         when(sobaService.findById(1L)).thenReturn(Optional.of(existingSoba));
         when(sobaService.saveSoba(any(Soba.class))).thenReturn(updatedSoba);

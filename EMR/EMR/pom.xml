@@ -8,11 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-<<<<<<< HEAD:EMR/EMR/pom.xml
 		<version>3.1.8</version>
-=======
-		<version>3.1.5</version>
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
 		<relativePath/>
 	</parent>
 
@@ -39,11 +35,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-<<<<<<< HEAD:EMR/EMR/pom.xml
-		<!-- WEB, JPA, VALIDATION -->
-=======
-		<!-- Spring Boot -->
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
+		<!-- Web + JPA + Validacija -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -60,9 +52,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
-<<<<<<< HEAD:EMR/EMR/pom.xml
-		<!-- DATABASE -->
+		<!-- MySQL Driver -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -70,27 +65,14 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- SPRING DOC / SWAGGER -->
-=======
-		<!-- Eureka Client -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
-
-		<!-- Swagger OpenAPI -->
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
+		<!-- Swagger/OpenAPI -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.2.0</version>
 		</dependency>
 
-<<<<<<< HEAD:EMR/EMR/pom.xml
-		<!-- JSON PATCH, JACKSON, DATE SUPPORT -->
-=======
-		<!-- JSON & DTOs -->
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
+		<!-- JSON Patch & Jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
@@ -101,60 +83,47 @@
 			<version>1.8</version>
 		</dependency>
 
-<<<<<<< HEAD:EMR/EMR/pom.xml
-		<!-- SPRING CLOUD CONFIG & EUREKA -->
+		<!-- Spring Cloud Config -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
+
+		<!-- Eureka Client -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!-- LOMBOK -->
-=======
 		<!-- Lombok -->
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-<<<<<<< HEAD:EMR/EMR/pom.xml
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- TESTING -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-=======
-
-		<!-- MySQL -->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- Test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>3.6.0</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>7.10.2</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -166,8 +135,4 @@
 			</plugin>
 		</plugins>
 	</build>
-<<<<<<< HEAD:EMR/EMR/pom.xml
-
-=======
->>>>>>> 738a04f108937bad8729a9260f5203f9e02c5125:EMR/pom.xml
 </project>
