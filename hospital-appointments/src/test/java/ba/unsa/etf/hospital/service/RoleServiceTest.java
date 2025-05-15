@@ -79,7 +79,6 @@ class RoleServiceTest {
     }
 
     @Test
-<<<<<<< HEAD:hospital-finance/src/test/java/ba/unsa/etf/hospital/service/RoleServiceTest.java
     public void testDeleteById_Role() {
         Long id = 1L;
 
@@ -108,8 +107,7 @@ class RoleServiceTest {
     }
 
 
-}
-=======
+
     void testFindById_NotFound() {
         // Arrange
         when(roleRepository.findById(1L)).thenReturn(Optional.empty());
@@ -142,4 +140,4 @@ class RoleServiceTest {
         assertThrows(RoleNotFoundException.class, () -> roleService.deleteById(1L));
     }
 }
->>>>>>> appointments-branch:hospital-appointments/src/test/java/ba/unsa/etf/hospital/service/RoleServiceTest.java
+
