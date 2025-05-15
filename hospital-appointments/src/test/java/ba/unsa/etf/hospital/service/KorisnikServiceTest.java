@@ -95,7 +95,6 @@ class KorisnikServiceTest {
     }
 
     @Test
-<<<<<<< HEAD:hospital-finance/src/test/java/ba/unsa/etf/hospital/service/KorisnikServiceTest.java
     public void testDeleteById_Korisnik() {
         Long id = 1L;
 
@@ -123,8 +122,6 @@ class KorisnikServiceTest {
         verify(korisnikRepository, never()).deleteById(id);
     }
 
-}
-=======
     void testDeleteById() {
         // Arrange
         when(korisnikRepository.existsById(1L)).thenReturn(true);
@@ -145,4 +142,3 @@ class KorisnikServiceTest {
         assertThrows(KorisnikNotFoundException.class, () -> korisnikService.deleteById(1L));
     }
 }
->>>>>>> appointments-branch:hospital-appointments/src/test/java/ba/unsa/etf/hospital/service/KorisnikServiceTest.java
