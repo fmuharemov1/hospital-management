@@ -7,14 +7,29 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="elektronski-karton-servis" />
+        <module name="config-server" />
+        <module name="hospital-appointments" />
+        <module name="hospital-finance" />
+        <module name="eureka" />
+        <module name="config-data" />
         <module name="EMR" />
+        <module name="client-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="elektronski-karton-servis" target="17" />
+      <module name="hospital (1)" target="17" />
+      <module name="hospital (2)" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="elektronski-karton-servis" options="-parameters" />
+      <module name="client-service" options="-parameters" />
+      <module name="config-server" options="-parameters" />
+      <module name="eureka" options="-parameters" />
+      <module name="hospital" options="-parameters" />
+      <module name="hospital (1)" options="-parameters" />
+      <module name="hospital-appointments" options="" />
     </option>
   </component>
 </project>
