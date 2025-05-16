@@ -112,4 +112,17 @@ public class Termin {
     public void setMeet_link(String meet_link) {
         this.meet_link = meet_link;
     }
+
+    public String getDatum() {
+        return this.datumVrijeme.toLocalDate().toString();
+    }
+
+    public String getVrijemePocetka() {
+        return this.datumVrijeme.toLocalTime().toString();
+    }
+
+    public String getVrijemeKraja() {
+        return this.datumVrijeme.plusMinutes(this.trajanje).toLocalTime().toString();
+    }
+
 }

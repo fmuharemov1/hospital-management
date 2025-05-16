@@ -1,6 +1,7 @@
 package ba.unsa.etf.hospital.controller;
 
-import ba.unsa.etf.hospital.dto.PacijentIdsDTO;
+import ba.unsa.etf.hospital.dto.PacijentDTO;
+import ba.unsa.etf.hospital.dto.PacijentListDTO;
 import ba.unsa.etf.hospital.model.Soba;
 import ba.unsa.etf.hospital.service.SobaService;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import ba.unsa.etf.hospital.exception.SobaNotFoundException;
 
 import java.util.List;
 import java.util.Map;
+import ba.unsa.etf.hospital.dto.PacijentDTO;
 
 @RestController
 @RequestMapping("/sobe")
@@ -25,6 +27,7 @@ public class SobaController {
         List<Soba> sobe = sobaService.getAllSobe();
         return ResponseEntity.ok(sobe);
     }
+
 
     @PostMapping
     public Soba createSoba(@Valid @RequestBody Soba soba) {
@@ -53,14 +56,14 @@ public class SobaController {
     }
 
     @PostMapping("/{sobaId}/dodaj-pacijente")
-    public ResponseEntity<?> dodajPacijenteUSobu(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+    public ResponseEntity<?> dodajPacijenteUSobu(@PathVariable Long sobaId, @RequestBody PacijentDTO request) {
         System.out.println("Pozvana metoda dodajPacijenteUSobu za sobu " + sobaId);
         sobaService.dodajPacijenteUSobu(sobaId, request.getPacijentIds());
         return ResponseEntity.ok().body(Map.of("message", "Pacijenti uspješno dodani u sobu"));
     }
 
     @PostMapping("/{sobaId}/otpusti-pacijente")
-    public ResponseEntity<?> otpustiPacijenteIzSobe(@PathVariable Long sobaId, @RequestBody PacijentIdsDTO request) {
+    public ResponseEntity<?> otpustiPacijenteIzSobe(@PathVariable Long sobaId, @RequestBody PacijentDTO request) {
         sobaService.otpustiPacijenteIzSobe(sobaId, request.getPacijentIds());
         return ResponseEntity.ok().body(Map.of("message", "Pacijenti uspješno otpušteni iz sobe"));
     }

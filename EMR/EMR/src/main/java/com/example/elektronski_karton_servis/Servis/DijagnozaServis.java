@@ -1,45 +1,41 @@
 package com.example.elektronski_karton_servis.Servis;
 
-import com.example.elektronski_karton_servis.model.Dijagnoza;
 import com.example.elektronski_karton_servis.Repository.DijagnozaRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.validation.ConstraintViolation;
+import com.example.elektronski_karton_servis.client.TerminClient;
+import com.example.elektronski_karton_servis.dto.TerminDTO;
+import com.example.elektronski_karton_servis.model.Dijagnoza;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.elektronski_karton_servis.Exception.DijagnozaNotFoundException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import jakarta.validation.Validator;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class DijagnozaServis {
 
     private final DijagnozaRepository dijagnozaRepository;
     private final ObjectMapper objectMapper;
-    private final Validator validator; // Deklarirajte validator
+    private final Validator validator;
+    private final TerminClient terminClient; // obavezno inicijalizirati
 
     @Autowired
-    public DijagnozaServis(DijagnozaRepository dijagnozaRepository, ObjectMapper objectMapper, Validator validator) {
+    public DijagnozaServis(DijagnozaRepository dijagnozaRepository,
+                           ObjectMapper objectMapper,
+                           Validator validator,
+                           TerminClient terminClient) { // dodaj ovdje
         this.dijagnozaRepository = dijagnozaRepository;
         this.objectMapper = objectMapper;
-        this.validator = validator; // Inicijalizirajte validator
+        this.validator = validator;
+        this.terminClient = terminClient; // inicijalizacija
     }
 
     public List<Dijagnoza> getAllDijagnoze() {
         return dijagnozaRepository.findAll();
     }
 
-    public Optional<Dijagnoza> findById(Integer id) {
+    public java.util.Optional<Dijagnoza> findById(Integer id) {
         return dijagnozaRepository.findById(id);
     }
 
@@ -57,6 +53,10 @@ public class DijagnozaServis {
                     postojećaDijagnoza.setDatumDijagnoze(novaDijagnoza.getDatumDijagnoze());
                     return dijagnozaRepository.save(postojećaDijagnoza);
                 });
+    }
+
+    public TerminDTO getTerminById(Long id) {
+        return terminClient.getTermin(id);
     }
 
     public void deleteById(Integer id) {
