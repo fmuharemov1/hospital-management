@@ -8,7 +8,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="elektronski-karton-servis" />
-        <module name="EMR" />
       </profile>
     </annotationProcessing>
   </component>

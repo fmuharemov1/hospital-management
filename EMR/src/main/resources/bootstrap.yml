@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: elektronski-karton-servis
+  profiles:
+    active: development
+  config:
+    import: configserver:http://localhost:8888
