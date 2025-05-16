@@ -1,0 +1,43 @@
+spring:
+<<<<<<< HEAD:EMR/src/main/resources/application-test.yml
+  config:
+    activate:
+      on-profile: test
+
+  application:
+    name: elektronski-karton-servis
+
+  cloud:
+    config:
+      enabled: false
+
+=======
+>>>>>>> main:EMR/EMR/src/main/resources/application-test.yml
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+<<<<<<< HEAD:EMR/src/main/resources/application-test.yml
+
+=======
+>>>>>>> main:EMR/EMR/src/main/resources/application-test.yml
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+<<<<<<< HEAD:EMR/src/main/resources/application-test.yml
+
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+=======
+>>>>>>> main:EMR/EMR/src/main/resources/application-test.yml
