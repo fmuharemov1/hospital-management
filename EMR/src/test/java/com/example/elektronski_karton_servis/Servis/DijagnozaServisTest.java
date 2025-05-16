@@ -1,7 +1,8 @@
 package com.example.elektronski_karton_servis.Servis;
 
 import com.example.elektronski_karton_servis.Repository.DijagnozaRepository;
-import com.example.elektronski_karton_servis.Servis.DijagnozaServis;
+import com.example.elektronski_karton_servis.client.TerminClient;
+import com.example.elektronski_karton_servis.dto.TerminDTO;
 import com.example.elektronski_karton_servis.model.Dijagnoza;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Validation;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,14 +20,17 @@ import static org.mockito.Mockito.*;
 public class DijagnozaServisTest {
 
     private DijagnozaRepository repo;
+    private TerminClient terminClient;
     private DijagnozaServis servis;
 
     @BeforeEach
     void init() {
         repo = mock(DijagnozaRepository.class);
+        terminClient = mock(TerminClient.class); // dodaj ovo
         ObjectMapper mapper = new ObjectMapper();
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        servis = new DijagnozaServis(repo, mapper, validator);
+
+        servis = new DijagnozaServis(repo, mapper, validator, terminClient); // sada odgovara konstruktoru
     }
 
     private Dijagnoza sample() {
@@ -37,7 +40,7 @@ public class DijagnozaServisTest {
         d.setOpis("Opis");
         d.setKartonId(12);
         d.setDatumDijagnoze(LocalDateTime.now());
-        d.setOsobljeUuid((1));
+        d.setOsobljeUuid(1);
         return d;
     }
 
@@ -85,4 +88,21 @@ public class DijagnozaServisTest {
         servis.deleteById(1);
         verify(repo, times(1)).deleteById(1);
     }
+    @Test
+    void getTerminById_returnsTermin() {
+        TerminDTO termin = new TerminDTO();
+        termin.setId(5L);
+        termin.setVrijemePocetka("10:00");
+        termin.setVrijemeKraja("10:30");
+
+        when(terminClient.getTermin(5L)).thenReturn(termin);
+
+        TerminDTO rezultat = servis.getTerminById(5L);
+
+        assertNotNull(rezultat);
+        assertEquals("10:00", rezultat.getVrijemePocetka());
+        assertEquals("10:30", rezultat.getVrijemeKraja());
+        verify(terminClient, times(1)).getTermin(5L);
+    }
+
 }

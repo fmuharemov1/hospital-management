@@ -82,4 +82,5 @@ public class TerminKontroler {
             throw new TerminNotFoundException(id);
         }
     }
+
 }
