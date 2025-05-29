@@ -1,0 +1,35 @@
+server:
+  port: 9091  # Spring Boot REST port (Tomcat)
+
+spring:
+  application:
+    name: system-events
+  datasource:
+    url: jdbc:mysql://localhost:3306/system_events_db
+    username: root
+    password: NovaSifra123!
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+grpc:
+  server:
+    port: 9095  # ✅ MORA biti različit od Spring `server.port`
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,20 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: file:///C:/Users/DT User/Desktop/hospital-management/config-data
+      label: main
+  profiles:
+    active: native
+grpc:
+  client:
+    system-events:
+      address: static://localhost:9095
+      enableKeepAlive: true
+      negotiationType: plaintext

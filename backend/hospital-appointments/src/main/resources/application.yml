@@ -1,0 +1,35 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: HOSPITAL-APPOINTMENTS
+  config:
+    import: configserver:http://localhost:8888
+  datasource:
+    url: jdbc:mysql://localhost:3306/bolnica
+    username: root
+    password: NovaSifra123!
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+grpc:
+  client:
+    system-events:
+      address: static://localhost:9095
+      enableKeepAlive: true
+      negotiationType: plaintext

@@ -1,50 +1,68 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/> <!-- Ne traži lokalni parent -->
+    </parent>
+
     <groupId>ba.unsa.etf</groupId>
     <artifactId>hospital-management</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
+    <name>hospital-management</name>
 
+    <!-- Lista svih modula -->
     <modules>
-        <module>hospital-appointments</module>
-        <module>hospital-finance</module>
-        <module>EMR</module>
-        <module>Eureka</module>
-        <module>config-server</module>
-        <module>config-data</module>
         <module>client-service</module>
+        <module>hospital-finance</module>
+        <module>hospital-appointments</module>
+        <module>system-events</module>
+        <module>api-gateway</module>
+        <module>config-data</module>
+        <module>config-server</module>
+        <module>Eureka</module>
+        <module>EMR</module>
+        <module>logging-core</module>
     </modules>
 
     <properties>
         <java.version>17</java.version>
-        <spring-boot.version>3.1.2</spring-boot.version>
+        <grpc.version>1.58.0</grpc.version>
+        <protobuf-java.version>3.24.4</protobuf-java.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
 
+    <!-- Upravljanje verzijama dependency-ja -->
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2023.0.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+
+
+    <!-- Repozitoriji -->
+    <repositories>
+        <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/release</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
 </project>

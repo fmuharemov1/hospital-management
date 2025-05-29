@@ -3,33 +3,56 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
+      <profile name="Annotation profile for hospital-finance" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="hospital" />
+      </profile>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="config-server" />
-        <module name="hospital-appointments" />
-        <module name="hospital-finance" />
-        <module name="eureka" />
-        <module name="config-data" />
-        <module name="EMR" />
-        <module name="client-service" />
+      </profile>
+      <profile name="Annotation profile for hospital-management" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="elektronski-karton-servis" target="17" />
-      <module name="hospital (1)" target="17" />
-      <module name="hospital (2)" target="1.5" />
+      <module name="api-gateway" target="17" />
+      <module name="client-service" target="17" />
+      <module name="config-data" target="17" />
+      <module name="config-server" target="17" />
+      <module name="EMR" target="17" />
+      <module name="eureka" target="17" />
+      <module name="hospital-appointments" target="17" />
+      <module name="hospital-finance" target="17" />
+      <module name="hospital-finance (1)" target="1.5" />
+      <module name="logging-core" target="1.8" />
+      <module name="system-events" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="EMR" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
       <module name="client-service" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="eureka" options="-parameters" />
       <module name="hospital" options="-parameters" />
-      <module name="hospital (1)" options="-parameters" />
-      <module name="hospital-appointments" options="" />
+      <module name="hospital-appointments" options="-parameters" />
+      <module name="hospital-finance" options="-parameters" />
+      <module name="hospital-management" options="" />
+      <module name="logging-core" options="" />
+      <module name="system-events" options="-parameters" />
     </option>
   </component>
 </project>

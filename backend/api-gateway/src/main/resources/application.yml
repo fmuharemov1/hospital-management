@@ -1,0 +1,52 @@
+server:
+  port: 8085
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: appointment-service
+          uri: lb://HOSPITAL-APPOINTMENTS
+          predicates:
+            - Path=/appointments/**
+          filters:
+            - RewritePath=/appointments(?<segment>/?.*), /${segment}
+
+        - id: client-service
+          uri: lb://CLIENT-SERVICE
+          predicates:
+            - Path=/client-service/**
+          filters:
+            - RewritePath=/client-service/(?<segment>.*), /${segment}
+
+        - id: emr-service
+          uri: lb://ELEKTRONSKI-KARTON-SERVIS
+          predicates:
+            - Path=/emr/**
+          filters:
+            - RewritePath=/emr(?<segment>/?.*), /${segment}
+
+        - id: finance-service
+          uri: lb://HOSPITAL-FINANCE
+          predicates:
+            - Path=/finance/**
+          filters:
+            - RewritePath=/finance(?<segment>/?.*), /${segment}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+grpc:
+  client:
+    system-events:
+      address: static://localhost:9091
+      negotiationType: plaintext
