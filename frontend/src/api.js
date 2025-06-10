@@ -1,7 +1,12 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8085', // koristi tvoj API Gateway
+  // ISPRAVKA: Promijenjen port na 8092 i uklonjen "/client-service"
+  baseURL: 'http://localhost:8092/api',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  withCredentials: true // Može ostati, ne smeta za JWT
 });
 
 instance.interceptors.request.use(

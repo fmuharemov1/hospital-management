@@ -13,6 +13,15 @@
         <option value="$PROJECT_DIR$/client-service/pom.xml" />
         <option value="$PROJECT_DIR$/system-events/pom.xml" />
         <option value="$PROJECT_DIR$/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/logging-core/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/hospital-finance/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/hospital-appointments/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/Eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/EMR/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/config-data/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/client-service/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/api-gateway/pom.xml" />
       </list>
     </option>
   </component>

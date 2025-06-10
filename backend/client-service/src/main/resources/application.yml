@@ -1,11 +1,19 @@
+server:
+  port: 8092
+
+  error:
+    include-message: always
+    include-stacktrace: always
+
 spring:
+  application:
+    name: CLIENT-SERVICE
+
   datasource:
     url: jdbc:mysql://localhost:3306/clientdb?useSSL=false&serverTimezone=UTC
     username: root
     password: NovaSifra123!
     driver-class-name: com.mysql.cj.jdbc.Driver
-server:
-  port: 8092
 
   jpa:
     hibernate:
@@ -14,27 +22,6 @@ server:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
 
-application:
-  name: client-service
-
-grpc:
-  client:
-    system-events:
-      address: discovery:///system-events
-      enableKeepAlive: true
-      negotiationType: plaintext
-
-
-
-jwt:
-  secret: VGhpcy1pcy1hLXN1cGVyLXNlY3VyZS1zZWNyZXQta2V5LXRvLWdlbmVyYXRlLUpXVHMhIQ==
-
-  logging:
-    level:
-      root: DEBUG
-      org.springframework.web: DEBUG
-      org.hibernate.SQL: DEBUG
-
 eureka:
   client:
     register-with-eureka: true
@@ -42,6 +29,24 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
 
+jwt:
+  secret: VGhpcy1pcy1hLXN1cGVyLXNlY3VyZS1zZWNyZXQta2V5LXRvLWdlbmVyYXRlLUpXVHMhIQ==
 
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG
 
+grpc:
+  client:
+    system-events:
+      address: discovery:///system-events
+      enableKeepAlive: true
+      negotiationType: plaintext

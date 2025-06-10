@@ -11,15 +11,21 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SpringBootApplication
 @EnableDiscoveryClient
 @ComponentScan(basePackages = {
 		"com.example.client_service",
-		"com.example.logging" // da vidi interceptor
+		"com.example.logging"
 })
 public class ClientServiceApplication {
+
+	private static final Logger logger = LoggerFactory.getLogger(ClientServiceApplication.class);
+
 	public static void main(String[] args) {
 		SpringApplication.run(ClientServiceApplication.class, args);
 	}
@@ -31,17 +37,36 @@ public class ClientServiceApplication {
 	}
 
 	@Bean
-	CommandLineRunner addUsers(UserRepository userRepo, PasswordEncoder encoder) {
+	@Transactional
+	public CommandLineRunner initDefaultUsers(UserRepository userRepo, PasswordEncoder encoder) {
 		return args -> {
-			if (userRepo.findByUsername("user").isEmpty()) {
-				userRepo.save(new User(null, "user", encoder.encode("user123"), Role.USER));
-			}
-			if (userRepo.findByUsername("admin").isEmpty()) {
-				userRepo.save(new User(null, "admin", encoder.encode("admin123"), Role.ADMIN));
+			try {
+				if (userRepo.findByUsername("user").isEmpty()) {
+					User user = new User();
+					user.setName("User");
+					user.setSurname("Demo");
+					user.setEmail("user@example.com");
+					user.setUsername("user");
+					user.setPassword(encoder.encode("user123"));
+					user.setRole(Role.USER);
+					userRepo.save(user);
+					logger.info("Default user added.");
+				}
+
+				if (userRepo.findByUsername("admin").isEmpty()) {
+					User admin = new User();
+					admin.setName("Admin");
+					admin.setSurname("System");
+					admin.setEmail("admin@example.com");
+					admin.setUsername("admin");
+					admin.setPassword(encoder.encode("admin123"));
+					admin.setRole(Role.ADMIN);
+					userRepo.save(admin);
+					logger.info("Default admin added.");
+				}
+			} catch (Exception e) {
+				logger.error("Error while initializing default users: {}", e.getMessage());
 			}
 		};
 	}
-
-
-
 }

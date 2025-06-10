@@ -7,7 +7,7 @@
 		<groupId>ba.unsa.etf</groupId>
 		<artifactId>hospital-management</artifactId>
 		<version>1.0.0</version>
-		<relativePath>../pom.xml</relativePath>
+
 	</parent>
 
 	<artifactId>client-service</artifactId>
@@ -17,6 +17,8 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.1</spring-cloud.version>
+		<grpc.version>1.56.0</grpc.version>
+		<protobuf.version>3.23.4</protobuf.version>
 	</properties>
 
 	<dependencyManagement>
@@ -32,13 +34,11 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Web -->
+		<!-- Web & Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -58,19 +58,20 @@
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId> <!-- Koristi Jackson umjesto JAXB -->
+			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.30</version> <!-- ili najnovija -->
+			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- 🔧 JAXB za JDK 11+ -->
+		<!-- JAXB -->
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
@@ -82,20 +83,18 @@
 			<version>4.0.0</version>
 		</dependency>
 
-		<!-- MySQL konektor -->
+		<!-- MySQL -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Eureka Client -->
+		<!-- Eureka + LoadBalancer -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-
-		<!-- Load Balancer -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
@@ -107,45 +106,44 @@
 			<artifactId>grpc-client-spring-boot-starter</artifactId>
 			<version>2.15.0.RELEASE</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-netty-shaded</artifactId>
-			<version>1.56.0</version>
+			<version>${grpc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-protobuf</artifactId>
-			<version>1.56.0</version>
+			<version>${grpc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-stub</artifactId>
-			<version>1.56.0</version>
+			<version>${grpc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>3.23.4</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 
-		<!-- Lokalni sistemski događaji -->
+		<!-- Lokalni gRPC i logging moduli -->
 		<dependency>
 			<groupId>com.example</groupId>
 			<artifactId>system-events</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>ba.unsa.etf</groupId>
+			<artifactId>logging-core</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
-		<!-- Logging -->
+		<!-- Logback (Spring Boot automatski vuče SLF4J 2.x) -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.4.11</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.4.11</version>
+			<version>1.4.14</version>
 		</dependency>
 
 		<!-- Servlet API -->
@@ -170,28 +168,42 @@
 	</dependencies>
 
 	<build>
-		<extensions>
-			<extension>
-				<groupId>kr.motd.maven</groupId>
-				<artifactId>os-maven-plugin</artifactId>
-				<version>1.7.0</version>
-			</extension>
-		</extensions>
-
 		<plugins>
-			<!-- Spring Boot -->
+			<!-- Spring Boot Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!-- Protobuf za gRPC -->
+			<!-- Build Helper (za gRPC generisane klase) -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/protobuf/java</source>
+								<source>${project.build.directory}/generated-sources/protobuf/grpc-java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Protobuf Plugin -->
 			<plugin>
 				<groupId>org.xolstice.maven.plugins</groupId>
 				<artifactId>protobuf-maven-plugin</artifactId>
 				<version>0.6.1</version>
 				<configuration>
-					<protocArtifact>com.google.protobuf:protoc:3.23.4:exe:${os.detected.classifier}</protocArtifact>
+					<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:windows-x86_64</protocArtifact>
 				</configuration>
 				<executions>
 					<execution>

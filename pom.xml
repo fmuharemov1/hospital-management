@@ -19,17 +19,18 @@
 
     <!-- Lista svih modula -->
     <modules>
-        <module>client-service</module>
-        <module>hospital-finance</module>
-        <module>hospital-appointments</module>
-        <module>system-events</module>
-        <module>api-gateway</module>
-        <module>config-data</module>
-        <module>config-server</module>
-        <module>Eureka</module>
-        <module>EMR</module>
-        <module>logging-core</module>
+        <module>backend/client-service</module>
+        <module>backend/hospital-finance</module>
+        <module>backend/hospital-appointments</module>
+        <module>backend/system-events</module>
+        <module>backend/api-gateway</module>
+        <module>backend/config-data</module>
+        <module>backend/config-server</module>
+        <module>backend/Eureka</module>
+        <module>backend/EMR</module>
+        <module>backend/logging-core</module>
     </modules>
+
 
     <properties>
         <java.version>17</java.version>

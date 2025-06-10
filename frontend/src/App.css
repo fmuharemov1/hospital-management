@@ -24,9 +24,16 @@ body {
 }
 
 .logo {
-  width: 100px;
-  margin-bottom: 20px;
+  width: 350px;       /* prilagodi veličinu */
+  display: block;     /* uklanja dodatne inline razmake */
+  margin: -117px 15px ;          /* nema margina */
+  padding: 0;         /* nema paddinga */
+  position: fixed; /* pozicioniraš apsolutno u odnosu na prvi roditeljski element koji ima position: relative */
+  top: 0;
+  left: 0;
+  z-index: 1100;
 }
+
 
 .hero h1 {
   font-size: 32px;
@@ -58,8 +65,28 @@ body {
   margin-left: 30px;
 }
 main {
-  padding: 40px;
   background-color: #f0f0f0;
   color: black;
   min-height: 100vh;
+}
+.navbar {
+  position: fixed;   /* fiksira navbar na vrh */
+  top: 0;
+  left: 0;
+  width: 100%;      /* da zauzima punu širinu */
+  background-color: #007f5f;
+  padding: 30px 60px;  /* gore/dole 30px, levo/desno 60px */
+  text-align: right;
+  box-sizing: border-box; /* da padding ne širi element preko 100% */
+  z-index: 1000;     /* da je iznad ostalih elemenata */
+}
+.nav-link {
+  text-decoration: none;
+  color: white;
+  margin-right: 120px;
+  font-size: 20px;
+
+}
+.nav-link:hover {
+  text-decoration: underline;
 }

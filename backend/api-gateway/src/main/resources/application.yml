@@ -2,51 +2,39 @@ server:
   port: 8085
 
 spring:
-  main:
-    web-application-type: reactive
   application:
     name: api-gateway
+
+  main:
+    web-application-type: reactive
 
   cloud:
     gateway:
       routes:
-        - id: appointment-service
-          uri: lb://HOSPITAL-APPOINTMENTS
+        - id: client-service # ID rute
+          uri: lb://CLIENT-SERVICE # Target servis (preko Eureke).
+            # Provjeri da li je tvoj "client-service" zaista registrovan kao "CLIENT-SERVICE" u Eureki.
+          # Ako nije, ili ako ne koristiš Eureka, onda stavi npr. uri: http://localhost:8080 (ako client-service radi na portu 8080)
           predicates:
-            - Path=/appointments/**
-          filters:
-            - RewritePath=/appointments(?<segment>/?.*), /${segment}
+            - Path=/api/users/** # <-- OVO JE KLJUČNA PROMJENA: Gateway će sada rutirati sve zahtjeve koji počinju sa /api/users/
+          # filteri:
+          #   - RewritePath=/api/users/(?<segment>.*), /api/users/${segment}
+          # Ovu liniju (RewritePath) sada MOŽEŠ UKLONITI ili zakomentarisati.
+          # Zašto? Zato što tvoj "client-service" već očekuje putanju "/api/users/login"
+          # (zbog @RequestMapping("/api/users") na kontroleru).
+          # Gateway će automatski proslijediti cijelu putanju "/api/users/login" ka "CLIENT-SERVICE",
+          # što je upravo ono što "client-service" očekuje.
+          # Samo ako bi "client-service" očekivao samo "/login" (bez "/api/users" prefiksa),
+          # onda bi ti trebao RewritePath=/api/users/(?<segment>.*), /${segment}
+          # Ali sa tvojom trenutnom konfiguracijom, ovo nije potrebno i može izazvati probleme.
 
-        - id: client-service
-          uri: lb://CLIENT-SERVICE
-          predicates:
-            - Path=/client-service/**
-          filters:
-            - RewritePath=/client-service/(?<segment>.*), /${segment}
-
-        - id: emr-service
-          uri: lb://ELEKTRONSKI-KARTON-SERVIS
-          predicates:
-            - Path=/emr/**
-          filters:
-            - RewritePath=/emr(?<segment>/?.*), /${segment}
-
-        - id: finance-service
-          uri: lb://HOSPITAL-FINANCE
-          predicates:
-            - Path=/finance/**
-          filters:
-            - RewritePath=/finance(?<segment>/?.*), /${segment}
 
 eureka:
   client:
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka # Adresa tvog Eureka servera
+
   instance:
     prefer-ip-address: true
-
-grpc:
-  client:
-    system-events:
-      address: static://localhost:9091
-      negotiationType: plaintext

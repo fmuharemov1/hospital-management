@@ -1,0 +1,68 @@
+.medical-record-page {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #007f5f;
+}
+
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #007f5f;
+    font-weight: bold;
+}
+
+.nav-link.active {
+    text-decoration: underline;
+}
+
+.patient-info {
+    margin-bottom: 40px;
+}
+
+.patient-info h2,
+.history-section h2 {
+    color: #007f5f;
+    margin-bottom: 15px;
+}
+
+.patient-info p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.history-table th {
+    background-color: #e0f2f1;
+}
+
+.history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}

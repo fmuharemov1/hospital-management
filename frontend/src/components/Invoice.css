@@ -1,0 +1,87 @@
+.invoice-page {
+    max-width: 800px;
+    margin: 120px auto 40px;
+    padding: 20px;
+    background-color: #004d40;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.invoice-page h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.user-info {
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #00695c;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.invoice-table th, .invoice-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #004d40;
+}
+
+.invoice-table th {
+    background-color: #007f5f;
+    font-weight: bold;
+}
+
+.paid {
+    color: #00e676;
+    font-weight: bold;
+}
+
+.unpaid {
+    color: #ff5252;
+    font-weight: bold;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 40px;
+    background-color: #007f5f;
+    text-align: right;
+    z-index: 1000;
+}
+
+.nav-link {
+    color: white;
+    margin-right: 60px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+.select-patient {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.select-patient label {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.select-patient select {
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #007f5f;
+    color: white;
+}

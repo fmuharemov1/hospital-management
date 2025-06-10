@@ -1,0 +1,100 @@
+.appointments-page {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.appointments-list {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.appointments-list h2 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.appointments-list ul {
+    list-style: none;
+    padding: 0;
+    display: flex;            /* Prikaz u red */
+    flex-wrap: wrap;          /* Ako nema mjesta, prelama u novi red */
+    gap: 10px;                /* Razmak između elemenata */
+    justify-content: center;  /* Centriraj u kontejneru */
+}
+
+.appointments-list li {
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Override default kalendar boje da budu u skladu sa dizajnom */
+.react-calendar {
+    background-color: #007f5f;
+    border-radius: 10px;
+    color: white;
+    border: none;
+    font-family: 'Segoe UI', sans-serif;
+
+}
+
+.react-calendar__navigation button {
+    color: white;
+    min-width: 44px;
+    background: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.react-calendar__tile {
+    background: #009688;
+    color: white;
+    border-radius: 6px;
+    margin: 3px;
+}
+
+.react-calendar__tile--active {
+    background: #004d40;
+    color: #a5d6a7;
+}
+.slot-button {
+    background-color: #00b894;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin: 5px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.slot-button:hover {
+    background-color: #019d7f;
+}
+
+.selection-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.selection-section select {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+}
+h3{
+    text-align: center;
+}
