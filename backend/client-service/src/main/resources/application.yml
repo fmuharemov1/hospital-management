@@ -1,10 +1,6 @@
 server:
   port: 8092
 
-  error:
-    include-message: always
-    include-stacktrace: always
-
 spring:
   application:
     name: CLIENT-SERVICE
@@ -21,6 +17,10 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
+
+  cloud:
+    config:
+      enabled: false  # važno ako ne koristiš config-server
 
 eureka:
   client:
@@ -43,6 +43,12 @@ logging:
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
     org.springframework.security: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 grpc:
   client:

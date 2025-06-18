@@ -59,4 +59,15 @@ public ResponseEntity<List<Faktura>> saveBatchFakture(@RequestBody List<Faktura>
                 .body(Collections.emptyList());
     }
 }
+    @GetMapping("/korisnik/{korisnikId}")
+    public ResponseEntity<List<Faktura>> getFaktureByKorisnikId(@PathVariable Long korisnikId) {
+        List<Faktura> fakture = fakturaService.getFaktureByKorisnikId(korisnikId);
+        return ResponseEntity.ok(fakture);
+    }
+    @GetMapping("/termin/{terminId}")
+    public ResponseEntity<List<Faktura>> getFaktureByTerminId(@PathVariable Long terminId) {
+        List<Faktura> fakture = fakturaService.getFaktureByTerminId(terminId);
+        return ResponseEntity.ok(fakture);
+    }
+
 }

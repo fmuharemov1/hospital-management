@@ -7,7 +7,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients(basePackages = "ba.unsa.etf.hospital.client")
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+		"ba.unsa.etf.hospital",
+		"com.example.logging" // 👈 moraš dodati ovaj paket!
+})
+
+
+
 public class HospitalFinanceApplication {
 
 	public static void main(String[] args) {

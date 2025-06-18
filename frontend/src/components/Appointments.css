@@ -1,3 +1,5 @@
+/* Your existing CSS for .appointments-page, h1, appointments-list, etc. */
+
 .appointments-page {
     max-width: 1000px;
     margin: 40px auto;
@@ -37,6 +39,10 @@ h1 {
     margin-bottom: 8px;
     border-radius: 6px;
     font-weight: 600;
+    display: flex; /* Allow content inside li to be aligned */
+    justify-content: space-between; /* Space out time/patient and button */
+    align-items: center; /* Vertically align items */
+    background-color: #007f5f; /* Example background for list items */
 }
 
 /* Override default kalendar boje da budu u skladu sa dizajnom */
@@ -97,4 +103,22 @@ h1 {
 }
 h3{
     text-align: center;
+}
+
+/* New style for the cancel button */
+.cancel-button {
+    background-color: #dc3545; /* Red color for cancel */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-left: 15px; /* Space from text */
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85em; /* Slightly smaller font */
+    transition: background-color 0.2s ease;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
 }

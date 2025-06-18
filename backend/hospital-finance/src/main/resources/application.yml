@@ -44,3 +44,9 @@ grpc:
       enableKeepAlive: true
       negotiationType: plaintext
 
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

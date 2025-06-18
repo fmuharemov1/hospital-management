@@ -17,9 +17,9 @@ public class GrpcSystemEventsClient {
     @GrpcClient("system-events")
     private EventLoggerGrpc.EventLoggerBlockingStub stub;
 
-    public void log(String actionType, String serviceName, String resource, String status, String username) {
+    public void log(String actionType, String service, String resource, String status, String username) {
         // 🚫 Spriječi logovanje iz system-events servisa samog sebe
-        if ("system-events".equalsIgnoreCase(serviceName)) {
+        if ("system-events".equalsIgnoreCase(service)) {
             logger.debug("⏭️ Preskočeno logovanje unutar system-events servisa kako bi se izbjegla rekurzija.");
             return;
         }
@@ -34,7 +34,7 @@ public class GrpcSystemEventsClient {
         try {
             EventRequest request = EventRequest.newBuilder()
                     .setActionType(actionType)
-                    .setServiceName(serviceName)
+                    .setService(service) // ✅ ispravljeno
                     .setResource(resource)
                     .setStatus(status)
                     .setUsername(username)

@@ -25,6 +25,12 @@ spring:
         jdbc:
           time_zone: UTC
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 eureka:
   client:
     service-url:
@@ -42,10 +48,10 @@ management:
   endpoint:
     health:
       show-details: always
+
 grpc:
   client:
     system-events:
       address: static://localhost:9095
       enableKeepAlive: true
       negotiationType: plaintext
-

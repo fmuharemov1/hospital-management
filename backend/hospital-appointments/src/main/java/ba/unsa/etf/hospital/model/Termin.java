@@ -13,6 +13,7 @@ public class Termin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(unique = true)
     private UUID terminUuid;
 
@@ -40,6 +41,11 @@ public class Termin {
     private Integer trajanje;
 
     private String meet_link;
+
+    @Column
+    private Boolean finalizovan = false; // ✔️ Promjena: boolean → Boolean
+
+    // --- Getteri i setteri (ručni, ako ne koristiš Lombok) ---
 
     public Long getId() {
         return id;
@@ -114,15 +120,25 @@ public class Termin {
     }
 
     public String getDatum() {
-        return this.datumVrijeme.toLocalDate().toString();
+        return this.datumVrijeme != null ? this.datumVrijeme.toLocalDate().toString() : null;
     }
 
     public String getVrijemePocetka() {
-        return this.datumVrijeme.toLocalTime().toString();
+        return this.datumVrijeme != null ? this.datumVrijeme.toLocalTime().toString() : null;
     }
 
     public String getVrijemeKraja() {
-        return this.datumVrijeme.plusMinutes(this.trajanje).toLocalTime().toString();
+        return (this.datumVrijeme != null && this.trajanje != null)
+                ? this.datumVrijeme.plusMinutes(this.trajanje).toLocalTime().toString()
+                : null;
     }
 
+
+    public Boolean getFinalizovan() {
+        return finalizovan;
+    }
+
+    public void setFinalizovan(Boolean finalizovan) {
+        this.finalizovan = finalizovan;
+    }
 }

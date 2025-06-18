@@ -20,7 +20,7 @@ public class EventLoggerImpl extends EventLoggerGrpc.EventLoggerImplBase {
     @Override
     public void logEvent(EventRequest request, StreamObserver<EventResponse> responseObserver) {
         System.out.println("[SYSTEM-EVENTS] Akcija: " + request.getActionType() +
-                ", Servis: " + request.getService() +
+                ", Servis: " +request.getService() +
                 ", Resurs: " + request.getResource());
 
         // Snimi u bazu

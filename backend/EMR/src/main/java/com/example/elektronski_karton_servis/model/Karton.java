@@ -44,6 +44,13 @@ public class Karton {
         System.out.println("Generisani UUID: " + this.pacijentUuid);
     }
 
+    public void setPacijentId(Long pacijentId) {
+        this.pacijentUuid = pacijentId.intValue(); // konverzija Long -> Integer
+    }
+
+    public Long getPacijentId() {
+        return pacijentUuid.longValue();
+    }
 
 
 }

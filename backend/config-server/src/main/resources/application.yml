@@ -18,3 +18,10 @@ grpc:
       address: static://localhost:9095
       enableKeepAlive: true
       negotiationType: plaintext
+
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

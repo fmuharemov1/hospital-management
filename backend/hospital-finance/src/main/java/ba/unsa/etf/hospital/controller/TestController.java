@@ -1,6 +1,6 @@
 package ba.unsa.etf.hospital.controller;
 
-import ba.unsa.etf.hospital.client.GrpcSystemEventsClient;
+import com.example.logging.GrpcSystemEventsClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,11 +15,12 @@ public class TestController {
 
     @GetMapping("/test-log")
     public String testGrpcLog() {
-        grpcLogger.logEvent(
-                "test-user",
-                "GET",
-                "/test-log",
-                "SUCCESS"
+        grpcLogger.log(
+                "GET",               // actionType
+                "hospital-finance", // serviceName
+                "/test-log",        // resource
+                "SUCCESS",          // status
+                "test-user"         // username
         );
         return "Sent gRPC log event from hospital-finance!";
     }

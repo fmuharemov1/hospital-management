@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -26,4 +27,5 @@ public class AuthenticationController {
         // Uklonjeni su debug ispis
         return ResponseEntity.ok(authService.authenticate(request));
     }
+
 }

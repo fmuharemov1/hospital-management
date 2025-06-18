@@ -1,0 +1,55 @@
+.rooms-page {
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 30px 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+.room-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.room-selector label {
+    margin-right: 12px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.room-selector select {
+    padding: 8px 14px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+.room-selector select:focus {
+    border-color: #00b894;
+}
+
+.room-details {
+    background-color: #e0f2f1;
+    border-left: 5px solid #00b894;
+    border-radius: 8px;
+    padding: 20px 25px;
+}
+
+.room-details h2 {
+    font-size: 20px;
+    color: #007f5f;
+    margin-bottom: 15px;
+}
+
+.room-details p {
+    font-size: 16px;
+    margin: 6px 0;
+}

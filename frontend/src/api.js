@@ -1,15 +1,13 @@
 import axios from 'axios';
 
-const instance = axios.create({
-  // ISPRAVKA: Promijenjen port na 8092 i uklonjen "/client-service"
-  baseURL: 'http://localhost:8092/api',
+const api = axios.create({
+  baseURL: 'http://localhost:8085/api',
   headers: {
     'Content-Type': 'application/json'
-  },
-  withCredentials: true // Može ostati, ne smeta za JWT
+  }
 });
 
-instance.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -20,4 +18,4 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default instance;
+export default api;

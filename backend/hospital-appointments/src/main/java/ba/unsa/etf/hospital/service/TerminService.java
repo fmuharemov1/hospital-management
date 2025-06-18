@@ -1,5 +1,6 @@
 package ba.unsa.etf.hospital.service;
 
+import ba.unsa.etf.hospital.dto.AppointmentEvent;
 import ba.unsa.etf.hospital.dto.TerminDTO;
 import ba.unsa.etf.hospital.exception.TerminNotFoundException;
 import ba.unsa.etf.hospital.model.Korisnik;
@@ -9,6 +10,8 @@ import ba.unsa.etf.hospital.repository.KorisnikRepository;
 import ba.unsa.etf.hospital.repository.ObavijestRepository;
 import ba.unsa.etf.hospital.repository.TerminRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,9 +23,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class TerminService {
+
     private final TerminRepository terminRepository;
     private final ObavijestRepository obavijestRepository;
     private final KorisnikRepository korisnikRepository;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     public TerminService(TerminRepository terminRepository, ObavijestRepository obavijestRepository, KorisnikRepository korisnikRepository) {
         this.terminRepository = terminRepository;
@@ -30,7 +37,7 @@ public class TerminService {
         this.korisnikRepository = korisnikRepository;
     }
 
-    public List<Termin> getAllTermini(){
+    public List<Termin> getAllTermini() {
         return terminRepository.findAll();
     }
 
@@ -67,6 +74,7 @@ public class TerminService {
 
         Korisnik doktor = korisnikRepository.findById(termin.getOsoblje().getId())
                 .orElseThrow(() -> new RuntimeException("Doktor nije pronađen"));
+
         String sadrzaj = "Podsjetnik: Sutra imate pregled kod " +
                 doktor.getIme() + " " + doktor.getPrezime() +
                 " u " + vrijemeTermina + ".";
@@ -76,7 +84,19 @@ public class TerminService {
         termin.setObavijest(savedObavijest);
         termin.setTerminUuid(UUID.randomUUID());
 
-        return terminRepository.save(termin);
+        // ⏺️ Spasi termin i dobavi ID
+        Termin savedTermin = terminRepository.save(termin);
+
+        // ⏺️ Kreiraj i pošalji RabbitMQ event
+        AppointmentEvent event = new AppointmentEvent(
+                savedTermin.getId(),
+                savedTermin.getPacijent().getId(),
+                "CREATED"
+        );
+
+        rabbitTemplate.convertAndSend("hospital.exchange", "appointment.created", event);
+
+        return savedTermin;
     }
 
     private TerminDTO mapToDTO(Termin termin) {

@@ -8,9 +8,14 @@ export default function Appointments() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [selectedDoctor, setSelectedDoctor] = useState('');
+    // Initial appointments data - ensure 'patient' field is present for all entries
     const [appointments, setAppointments] = useState({
         "2025-05-30": {
             "Dr. Heart": [{ time: "09:00", patient: "Marko Marković" }]
+        },
+        // Adding a pre-booked appointment by "You" for testing cancellation
+        "2025-06-11": { // Current date for easier testing
+            "Dr. Brain": [{ time: "12:00", patient: "You" }]
         }
     });
 
@@ -25,24 +30,69 @@ export default function Appointments() {
     const formatDate = (date) => date.toISOString().split('T')[0];
     const formattedSelectedDate = formatDate(selectedDate);
 
-    const bookedSlots = appointments[formattedSelectedDate]?.[selectedDoctor]?.map(app => app.time) || [];
-    const availableSlots = allSlots.filter(time => !bookedSlots.includes(time));
+    // Filter booked slots to show only those booked by the current selected doctor
+    const bookedSlotsForSelectedDoctor = appointments[formattedSelectedDate]?.[selectedDoctor] || [];
+    const bookedSlotTimes = bookedSlotsForSelectedDoctor.map(app => app.time);
+
+    const availableSlots = allSlots.filter(time => !bookedSlotTimes.includes(time));
 
     const handleBooking = (time) => {
-        const newAppointment = { time, patient: 'You' };
+        const newAppointment = { time, patient: 'You' }; // Assume 'You' is the current patient
 
         setAppointments(prev => {
-            const day = prev[formattedSelectedDate] || {};
-            const doctorAppointments = day[selectedDoctor] || [];
+            const dayAppointments = { ...prev[formattedSelectedDate] } || {};
+            const doctorAppointments = dayAppointments[selectedDoctor] || [];
+
+            // Add new appointment
+            const updatedDoctorAppointments = [...doctorAppointments, newAppointment];
+
             return {
                 ...prev,
                 [formattedSelectedDate]: {
-                    ...day,
-                    [selectedDoctor]: [...doctorAppointments, newAppointment]
+                    ...dayAppointments,
+                    [selectedDoctor]: updatedDoctorAppointments
                 }
             };
         });
+        alert(`Appointment at ${time} booked successfully!`);
     };
+
+    const handleCancelAppointment = (timeToRemove) => {
+        // Confirmation dialog
+        if (!window.confirm(`Are you sure you want to cancel the appointment at ${timeToRemove} with ${selectedDoctor}?`)) {
+            return; // If user cancels, do nothing
+        }
+
+        setAppointments(prev => {
+            const dayAppointments = { ...prev[formattedSelectedDate] } || {};
+            const doctorAppointments = dayAppointments[selectedDoctor] || [];
+
+            // Filter out the appointment that matches timeToRemove and is booked by 'You'
+            const updatedDoctorAppointments = doctorAppointments.filter(app =>
+                !(app.time === timeToRemove && app.patient === 'You')
+            );
+
+            // If no appointments left for the doctor on that day, potentially remove the doctor's entry
+            // This is optional, depends on how you want to clean up empty arrays/objects
+            if (updatedDoctorAppointments.length === 0) {
+                const { [selectedDoctor]: removedDoctor, ...restOfDay } = dayAppointments;
+                return {
+                    ...prev,
+                    [formattedSelectedDate]: Object.keys(restOfDay).length > 0 ? restOfDay : undefined // Remove day if empty
+                };
+            }
+
+            return {
+                ...prev,
+                [formattedSelectedDate]: {
+                    ...dayAppointments,
+                    [selectedDoctor]: updatedDoctorAppointments
+                }
+            };
+        });
+        alert(`Appointment at ${timeToRemove} has been cancelled.`);
+    };
+
 
     return (
         <div className="appointments-page">
@@ -50,7 +100,8 @@ export default function Appointments() {
             <img src="/medapp-logo-removebg-preview.png" alt="MedApp Clinics Logo" className="logo" />
             <nav className="navbar">
                 <Link to="/profile" className="nav-link">Profile</Link>
-                <Link to="/appointments" className="nav-link">Appointments</Link>
+                <Link to="/appointments" className="nav-link active">Appointments</Link>
+                <Link to="/patient-emr" className="nav-link">E-Record</Link> {/* Corrected path */}
                 <Link to="/" className="nav-link">Log out</Link>
             </nav>
 
@@ -79,15 +130,26 @@ export default function Appointments() {
 
             {selectedDoctor && (
                 <div className="appointments-list">
-                    <h2>Appointments for {formattedSelectedDate}</h2>
-                    {appointments[formattedSelectedDate]?.[selectedDoctor]?.length > 0 ? (
+                    <h2>Appointments for {formattedSelectedDate} with {selectedDoctor}</h2>
+                    {bookedSlotsForSelectedDoctor.length > 0 ? (
                         <ul>
-                            {appointments[formattedSelectedDate][selectedDoctor].map((app, idx) => (
-                                <li key={idx}><strong>{app.time}</strong> - {app.patient}</li>
+                            {bookedSlotsForSelectedDoctor.map((app, idx) => (
+                                <li key={idx}>
+                                    <strong>{app.time}</strong> - {app.patient}
+                                    {/* Show cancel button ONLY if the patient is 'You' (current user) */}
+                                    {app.patient === 'You' && (
+                                        <button
+                                            onClick={() => handleCancelAppointment(app.time)}
+                                            className="cancel-button"
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                </li>
                             ))}
                         </ul>
                     ) : (
-                        <p>No appointments booked yet.</p>
+                        <p>No appointments booked yet for this doctor on this day.</p>
                     )}
 
                     <h3>Available Slots</h3>

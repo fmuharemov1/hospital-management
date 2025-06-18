@@ -10,11 +10,13 @@ service EventLogger {
 
 message EventRequest {
   string actionType = 1;
-  string service = 2;
+  string service = 2; // ✔️ ovo je novi naziv
   string resource = 3;
   string status = 4;
   string username = 5;
 }
+
+
 
 message EventResponse {
   bool success = 1;
