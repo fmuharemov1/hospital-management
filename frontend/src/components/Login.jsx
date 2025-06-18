@@ -21,7 +21,7 @@ export default function Login() {
 
       localStorage.setItem('token', response.data.token);
       setMessage('Uspješno logovanje!');
-    window.location.href = "/emr";
+    window.location.href = "/profile";
     } catch (err) {
       console.error(err);
       if (err.response?.status === 500) {
