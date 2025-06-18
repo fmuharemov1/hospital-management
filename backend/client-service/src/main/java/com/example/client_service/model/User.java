@@ -33,4 +33,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public Object getFullName() {
+        return surname + " " + name;
+    }
 }

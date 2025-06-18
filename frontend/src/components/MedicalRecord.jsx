@@ -1,72 +1,137 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MedicalRecord.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function MedicalRecord() {
-    // Initial patient data - this would typically come from an API
-    const initialPatients = [
-        {
-            id: 1,
-            fullName: 'John Doe',
-            jmbg: '1234567890123',
-            birthDate: '1985-04-12',
-            gender: 'Male',
-            contact: '+387 61 234 567',
-            address: 'Zmaja od Bosne bb, Sarajevo',
-        },
-        {
-            id: 2,
-            fullName: 'Ana Kovač',
-            jmbg: '9876543210987',
-            birthDate: '1990-10-05',
-            gender: 'Female',
-            contact: '+387 62 987 654',
-            address: 'Titova 10, Sarajevo',
-        }
-    ];
+    const navigate = useNavigate();
 
-    // Initial medical history data - add unique IDs to each entry for easier management
-    const initialMedicalHistory = {
-        1: [ // for John
-            {
-                id: 'mhr101', date: '2025-04-20', time: '09:00', doctor: 'Dr. Heart',
-                department: 'Cardiology', diagnosis: 'Hypertension', therapy: 'Lisinopril 10mg once daily',
-            },
-            {
-                id: 'mhr102', date: '2025-05-01', time: '13:30', doctor: 'Dr. Brain',
-                department: 'Neurology', diagnosis: 'Migraine', therapy: 'Ibuprofen 400mg as needed',
-            },
-        ],
-        2: [ // for Ana
-            {
-                id: 'mhr201', date: '2025-03-15', time: '11:00', doctor: 'Dr. Joint',
-                department: 'Orthopedics', diagnosis: 'Knee pain', therapy: 'Physical therapy 2x/week',
-            },
-        ]
-    };
-
-    // States to manage the data
-    const [patients, setPatients] = useState(initialPatients);
-    const [medicalHistory, setMedicalHistory] = useState(initialMedicalHistory);
+    // Stanja za podatke sa backenda
+    const [patients, setPatients] = useState([]);
+    const [medicalHistory, setMedicalHistory] = useState({}); // Keš za historiju po pacijentu
     const [selectedPatientId, setSelectedPatientId] = useState('');
 
-    // States for editing functionality
-    const [editingEntryId, setEditingEntryId] = useState(null); // ID of the entry being edited
-    const [currentEditData, setCurrentEditData] = useState({}); // Temporary data for editing
+    // Stanja za funkcionalnost uređivanja
+    const [editingEntryId, setEditingEntryId] = useState(null);
+    const [currentEditData, setCurrentEditData] = useState({});
 
-    // States for adding new entry functionality
-    const [showAddForm, setShowAddForm] = useState(false); // Controls visibility of the add form
-    const [newEntryData, setNewEntryData] = useState({ // Data for the new entry form
-        date: '', time: '', doctor: '', department: '', diagnosis: '', therapy: '',
+    // Stanja za funkcionalnost dodavanja nove fakture
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [newEntryData, setNewEntryData] = useState({
+        date: '', time: '', doctor: '', department: '', diagnosis: '', therapy: ''
     });
 
-    const selectedPatient = patients.find(p => p.id === parseInt(selectedPatientId));
+    const [isLoading, setIsLoading] = useState(true); // Stanje za loading
+    const [error, setError] = useState(null); // Stanje za greške
+
+    // Dohvati JWT token
+    const getAuthToken = () => {
+        return localStorage.getItem('token');
+    };
+
+    // --- Učitavanje pacijenata (pokreće se samo jednom pri mountu) ---
+    useEffect(() => {
+        const fetchPatients = async () => {
+            setIsLoading(true);
+            setError(null);
+            const token = getAuthToken();
+            if (!token) {
+                setError("Authentication token not found. Please log in.");
+                navigate('/login');
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const mapKartonToMedicalRecord = (karton) => ({
+                    id: karton.id,
+                    patientId: karton.patientId,
+                    date: karton.datum,
+                    time: karton.vrijeme,
+                    doctor: karton.doktor,
+                    department: karton.odjel,
+                    diagnosis: karton.dijagnoza,
+                    therapy: karton.terapija
+                });
+                const response = await fetch('http://localhost:8093/api/kartoni', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Failed to fetch patients: ${response.status} - ${errorText}`);
+                }
+
+                const patientsData = await response.json();
+                setPatients(patientsData);
+            } catch (err) {
+                console.error("Error fetching patients:", err);
+                setError(`Error loading patients: ${err.message}`);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchPatients();
+    }, [navigate]); // navigate je dodan kao dependency
+
+    // --- Učitavanje medicinske historije za odabranog pacijenta ---
+    useEffect(() => {
+        const fetchPatientHistory = async () => {
+            if (!selectedPatientId) return; // Ne dohvaćaj ako nema odabranog pacijenta
+
+            setError(null); // Resetuj greške za historiju
+            const token = getAuthToken();
+            if (!token) {
+                setError("Authentication token not found. Please log in.");
+                navigate('/login');
+                return;
+            }
+
+            try {
+                // Provjeriti da li već imamo keširanu historiju
+                if (medicalHistory[selectedPatientId]) {
+                    console.log("Using cached medical history for patient:", selectedPatientId);
+                    return; // Koristi keširanu verziju
+                }
+
+                console.log("Fetching medical history for patient:", selectedPatientId);
+                const response = await fetch(`http://localhost:8093/api/kartoni/${selectedPatientId}/karton`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Failed to fetch medical history: ${response.status} - ${errorText}`);
+                }
+
+                const historyData = await response.json();
+                setMedicalHistory(prev => ({
+                    ...prev,
+                    [selectedPatientId]: historyData // Keširaj historiju
+                }));
+            } catch (err) {
+                console.error("Error fetching medical history:", err);
+                setError(`Error loading medical history: ${err.message}`);
+            }
+        };
+
+        // Pozovi kada se selectedPatientId promijeni ili kada se promijeni funkcija navigate (zbog ESLinta)
+        fetchPatientHistory();
+    }, [selectedPatientId, navigate, medicalHistory]); // Dodajte medicalHistory kao dependency
+
+    // Filtriraj odabranog pacijenta i historiju
+    const selectedPatient = patients.find(p => p.id === Number(selectedPatientId));
     const selectedHistory = selectedPatientId ? medicalHistory[selectedPatientId] || [] : [];
 
     // --- Editing Functions ---
     const handleEdit = (entryToEdit) => {
         setEditingEntryId(entryToEdit.id);
-        setCurrentEditData({ ...entryToEdit }); // Create a copy for editing
+        setCurrentEditData({ ...entryToEdit });
     };
 
     const handleChangeEdit = (e) => {
@@ -74,19 +139,44 @@ export default function MedicalRecord() {
         setCurrentEditData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSaveEdit = () => {
-        setMedicalHistory(prevHistory => {
-            const updatedPatientHistory = prevHistory[selectedPatientId].map(entry =>
-                entry.id === editingEntryId ? currentEditData : entry
-            );
-            return {
-                ...prevHistory,
-                [selectedPatientId]: updatedPatientHistory
-            };
-        });
-        setEditingEntryId(null);
-        setCurrentEditData({});
-        alert('Medical record entry updated successfully!');
+    const handleSaveEdit = async (entryId) => {
+        const token = getAuthToken();
+        if (!token) {
+            alert("Authentication token not found. Please log in.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8093/api/kartoni/${entryId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(currentEditData)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update medical record entry: ${response.status} - ${errorText}`);
+            }
+
+            // Ažuriraj keširanu historiju nakon uspješnog spremanja
+            setMedicalHistory(prev => {
+                const updatedEntries = prev[selectedPatientId].map(entry =>
+                    entry.id === entryId ? currentEditData : entry
+                );
+                return { ...prev, [selectedPatientId]: updatedEntries };
+            });
+
+            setEditingEntryId(null);
+            setCurrentEditData({});
+            alert('Medical record entry updated successfully!');
+        } catch (err) {
+            console.error("Error updating entry:", err);
+            setError(`Error updating entry: ${err.message}`);
+        }
     };
 
     const handleCancelEdit = () => {
@@ -100,43 +190,123 @@ export default function MedicalRecord() {
         setNewEntryData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleAddNewEntry = () => {
+    const handleAddNewEntry = async () => {
         if (!selectedPatientId) {
             alert('Please select a patient first.');
             return;
         }
 
-        // Basic validation for new entry data (you can add more)
         if (!newEntryData.date || !newEntryData.time || !newEntryData.doctor || !newEntryData.diagnosis) {
             alert('Please fill in all required fields (Date, Time, Doctor, Diagnosis).');
             return;
         }
 
-        setMedicalHistory(prevHistory => {
-            const newEntry = {
-                ...newEntryData,
-                id: `mhr${Date.now()}` // Simple unique ID generation for demo
-            };
-            const updatedPatientHistory = [...(prevHistory[selectedPatientId] || []), newEntry];
-            return {
-                ...prevHistory,
-                [selectedPatientId]: updatedPatientHistory
-            };
-        });
-        setNewEntryData({ // Reset form
-            date: '', time: '', doctor: '', department: '', diagnosis: '', therapy: '',
-        });
-        setShowAddForm(false); // Hide form after adding
-        alert('New medical record entry added successfully!');
+        const token = getAuthToken();
+        if (!token) {
+            alert("Authentication token not found. Please log in.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8093/api/kartoni/${selectedPatientId}/karton`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...newEntryData,
+                    patientId: Number(selectedPatientId) // Uvjerite se da je patientId broj
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to add medical record entry: ${response.status} - ${errorText}`);
+            }
+
+            const addedEntry = await response.json(); // Pretpostavljamo da backend vraća dodani entitet sa ID-om
+            // Ažuriraj keširanu historiju dodavanjem novog unosa
+            setMedicalHistory(prev => ({
+                ...prev,
+                [selectedPatientId]: [...(prev[selectedPatientId] || []), addedEntry]
+            }));
+
+            setNewEntryData({ date: '', time: '', doctor: '', department: '', diagnosis: '', therapy: '' });
+            setShowAddForm(false);
+            alert('New medical record entry added successfully!');
+        } catch (err) {
+            console.error("Error adding entry:", err);
+            setError(`Error adding entry: ${err.message}`);
+        }
     };
+
+    // --- Delete Function ---
+    const handleDeleteEntry = async (entryId) => {
+        if (!window.confirm("Are you sure you want to delete this medical record entry?")) {
+            return;
+        }
+
+        const token = getAuthToken();
+        if (!token) {
+            alert("Authentication token not found. Please log in.");
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8093/api/kartoni/${entryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to delete medical record entry: ${response.status} - ${errorText}`);
+            }
+
+            // Ažuriraj keširanu historiju uklanjanjem unosa
+            setMedicalHistory(prev => ({
+                ...prev,
+                [selectedPatientId]: prev[selectedPatientId].filter(entry => entry.id !== entryId)
+            }));
+
+            alert('Medical record entry deleted successfully!');
+        } catch (err) {
+            console.error("Error deleting entry:", err);
+            setError(`Error deleting entry: ${err.message}`);
+        }
+    };
+
+    // Funkcija za odjavu
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
+
+    if (isLoading) {
+        return <div className="medical-record-page">Loading data...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="medical-record-page error-message">
+                <p>{error}</p>
+                <Link to="/login">Go to Login</Link>
+            </div>
+        );
+    }
 
     return (
         <div className="medical-record-page">
             <nav className="navbar">
                 <Link to="/rooms" className="nav-link">Rooms</Link>
                 <Link to="/dr-appointments" className="nav-link">Appointments</Link>
-                <Link to="/emr" className="nav-link active">E-Record</Link>
-                <Link to="/" className="nav-link">Log out</Link>
+                <Link to="/emr" className="nav-link active">EMR</Link>
+                <button onClick={handleLogout} className="nav-link logout-button">Log out</button>
             </nav>
 
             <h1>E-Medical Record</h1>
@@ -148,9 +318,9 @@ export default function MedicalRecord() {
                     value={selectedPatientId}
                     onChange={(e) => {
                         setSelectedPatientId(e.target.value);
-                        setEditingEntryId(null); // Reset editing mode when patient changes
+                        setEditingEntryId(null);
                         setCurrentEditData({});
-                        setShowAddForm(false); // Hide add form
+                        setShowAddForm(false);
                         setNewEntryData({date: '', time: '', doctor: '', department: '', diagnosis: '', therapy: ''});
                     }}
                 >
@@ -214,12 +384,12 @@ export default function MedicalRecord() {
                                     <th>Department</th>
                                     <th>Diagnosis</th>
                                     <th>Therapy</th>
-                                    <th>Actions</th> {/* New column for edit/save/cancel */}
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {selectedHistory.map((entry) => (
-                                    <tr key={entry.id}> {/* Use unique ID for key */}
+                                    <tr key={entry.id}>
                                         <td>
                                             {editingEntryId === entry.id ? (
                                                 <input type="date" name="date" value={currentEditData.date} onChange={handleChangeEdit} />
@@ -265,11 +435,14 @@ export default function MedicalRecord() {
                                         <td>
                                             {editingEntryId === entry.id ? (
                                                 <>
-                                                    <button onClick={handleSaveEdit} className="save-button">Save</button>
+                                                    <button onClick={() => handleSaveEdit(entry.id)} className="save-button">Save</button>
                                                     <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
                                                 </>
                                             ) : (
-                                                <button onClick={() => handleEdit(entry)} className="edit-button">Edit</button>
+                                                <>
+                                                    <button onClick={() => handleEdit(entry)} className="edit-button">Edit</button>
+                                                    <button onClick={() => handleDeleteEntry(entry.id)} className="delete-button">Delete</button>
+                                                </>
                                             )}
                                         </td>
                                     </tr>

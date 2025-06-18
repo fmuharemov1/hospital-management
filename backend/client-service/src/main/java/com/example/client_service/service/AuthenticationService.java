@@ -7,8 +7,8 @@ import com.example.client_service.model.Role;
 import com.example.client_service.model.User;
 import com.example.client_service.repository.UserRepository;
 import com.example.client_service.security.JwtService;
-import com.example.logging.GrpcSystemEventsClient;
-import jakarta.annotation.PostConstruct;
+import com.example.logging.GrpcSystemEventsClient; // Provjerite putanju
+import jakarta.annotation.PostConstruct; // Provjerite putanju (Jakarta vs Javax)
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +29,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final GrpcSystemEventsClient grpcClient;
+    private final GrpcSystemEventsClient grpcClient; // Provjerite da li je ovo i dalje potrebno/aktivno
 
     /**
      * Obrađuje zahtjev za prijavu korisnika.
@@ -49,16 +49,13 @@ public class AuthenticationService {
                         return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Korisnik nije pronađen nakon uspješne autentifikacije.");
                     });
 
-            String jwt = jwtService.generateToken(user.getUsername());
+            // LINIJA 52: KLJUČNA IZMJENA - proslijedi cijeli 'user' objekat
+            String jwt = jwtService.generateToken(user); // <-- OVDJE PROMJENJENO!
 
-            grpcClient.log("LOGIN", "client-service", "/api/users/login", "SUCCESS", request.getUsername());
+            grpcClient.log("LOGIN", "client-service", "/api/users/login", "SUCCESS", user.getUsername()); // Koristi user.getUsername() za log
             // Vrati JWT token, username i rolu
             return new AuthenticationResponse(jwt, user.getUsername(), user.getRole());
             // Napomena: Za ovo je potrebno da AuthenticationResponse DTO ima polja za username i role.
-            // Ako već nemaš, dodaj ih u AuthenticationResponse DTO:
-            // private String username;
-            // private Role role;
-            // i odgovarajući konstruktor/Lombok anotacije.
 
         } catch (BadCredentialsException e) {
             grpcClient.log("LOGIN", "client-service", "/api/users/login", "ERROR", request.getUsername());
@@ -118,9 +115,9 @@ public class AuthenticationService {
         // Sačuvaj korisnika u bazu podataka
         userRepository.save(user);
 
-        // Generiši JWT token za novoregistrovanog korisnika
-        String token = jwtService.generateToken(user.getUsername());
-        grpcClient.log("REGISTER", "client-service", "/api/users/register", "SUCCESS", request.getUsername());
+        // LINIJA 122: KLJUČNA IZMJENA - proslijedi cijeli 'user' objekat
+        String token = jwtService.generateToken(user); // <-- OVDJE PROMJENJENO!
+        grpcClient.log("REGISTER", "client-service", "/api/users/register", "SUCCESS", user.getUsername()); // Koristi user.getUsername() za log
         // Vrati JWT token, username i rolu
         return new AuthenticationResponse(token, user.getUsername(), user.getRole());
     }

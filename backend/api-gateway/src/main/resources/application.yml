@@ -18,17 +18,32 @@ spring:
 
     gateway:
       routes:
+        - id: client-emr-service
+          uri: http://localhost:8092
+          predicates:
+            - Path=/api/client/emr/**
         - id: client-service-users
           uri: lb://CLIENT-SERVICE
           predicates:
             - Path=/api/users/**
 
+        - id: client-service # ID rute
+          uri: lb://CLIENT-SERVICE # Target servis (preko Eureke).
+          # Provjeri da li je tvoj "client-service" zaista registrovan kao "CLIENT-SERVICE" u Eureki.
+          # Ako nije, ili ako ne koristiš Eureka, onda stavi npr. uri: http://localhost:8080 (ako client-service radi na portu 8080)
+          predicates:
+            - Path=/api/client/** # <-- Ispravljena putanja za client-service API
+        - id: emr-service
+          uri: http://localhost:8082  # port gdje radi EMR service
+          predicates:
+            - Path=/api/emr/**
         - id: client-service-api
           uri: lb://CLIENT-SERVICE
           predicates:
             - Path=/api/client/**
           filters:
             - RewritePath=/api/client/(?<segment>.*), /api/${segment}
+
 
 eureka:
   client:
@@ -39,3 +54,6 @@ eureka:
 
   instance:
     prefer-ip-address: true
+
+jwt:
+  secret: VGhpcy1pcy1hLXN1cGVyLXNlY3VyZS1zZWNyZXQta2V5LXRvLWdlbmVyYXRlLUpXVHMhIQ==

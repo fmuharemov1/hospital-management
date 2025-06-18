@@ -7,7 +7,7 @@
 		<groupId>ba.unsa.etf</groupId>
 		<artifactId>hospital-management</artifactId>
 		<version>1.0.0</version>
-
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>client-service</artifactId>
