@@ -70,7 +70,8 @@ button[type="submit"]:hover {
 }
 
 .text-red-500 {
-    color: #ef4444;
+    color: whitesmoke;
+    font-size: medium;
 }
 
 .text-sm {
