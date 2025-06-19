@@ -10,6 +10,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -32,10 +33,14 @@ public class ClientServiceApplication {
 
 	@Bean
 	@LoadBalanced
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	public RestTemplate loadBalancedRestTemplate() {
+		return new RestTemplate();  // Za mikroservise
 	}
-
+	@Bean
+	@Primary
+	public RestTemplate restTemplate() {
+		return new RestTemplate();  // Za direktne URL pozive
+	}
 	@Bean
 	@Transactional
 	public CommandLineRunner initDefaultUsers(UserRepository userRepo, PasswordEncoder encoder) {

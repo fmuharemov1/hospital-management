@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static jakarta.ws.rs.HttpMethod.POST;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -51,11 +53,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable()) // 🚫 Isključi CORS ovdje!
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/client/reports/**").authenticated()
+                        .requestMatchers("/api/client/emr/**").permitAll()
+                        .requestMatchers("/api/client/patient-emr/**").authenticated() // DODANO
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

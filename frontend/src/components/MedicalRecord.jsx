@@ -42,17 +42,8 @@ export default function MedicalRecord() {
             }
 
             try {
-                const mapKartonToMedicalRecord = (karton) => ({
-                    id: karton.id,
-                    patientId: karton.patientId,
-                    date: karton.datum,
-                    time: karton.vrijeme,
-                    doctor: karton.doktor,
-                    department: karton.odjel,
-                    diagnosis: karton.dijagnoza,
-                    therapy: karton.terapija
-                });
-                const response = await fetch('http://localhost:8093/api/kartoni', {
+                // AŽURIRANI URL: Poziva API Gateway na 8085, koji će rutirati na client-service
+                const response = await fetch('http://localhost:8085/api/client/emr/patients', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -65,6 +56,7 @@ export default function MedicalRecord() {
                 }
 
                 const patientsData = await response.json();
+                // Pretpostavljamo da backend vraća pacijente u formatu koji očekuje frontend
                 setPatients(patientsData);
             } catch (err) {
                 console.error("Error fetching patients:", err);
@@ -74,14 +66,14 @@ export default function MedicalRecord() {
             }
         };
         fetchPatients();
-    }, [navigate]); // navigate je dodan kao dependency
+    }, [navigate]);
 
     // --- Učitavanje medicinske historije za odabranog pacijenta ---
     useEffect(() => {
         const fetchPatientHistory = async () => {
-            if (!selectedPatientId) return; // Ne dohvaćaj ako nema odabranog pacijenta
+            if (!selectedPatientId) return;
 
-            setError(null); // Resetuj greške za historiju
+            setError(null);
             const token = getAuthToken();
             if (!token) {
                 setError("Authentication token not found. Please log in.");
@@ -93,11 +85,12 @@ export default function MedicalRecord() {
                 // Provjeriti da li već imamo keširanu historiju
                 if (medicalHistory[selectedPatientId]) {
                     console.log("Using cached medical history for patient:", selectedPatientId);
-                    return; // Koristi keširanu verziju
+                    return;
                 }
 
                 console.log("Fetching medical history for patient:", selectedPatientId);
-                const response = await fetch(`http://localhost:8093/api/kartoni/${selectedPatientId}/karton`, {
+                // AŽURIRANI URL: Poziva API Gateway na 8085, koji će rutirati na client-service
+                const response = await fetch(`http://localhost:8085/api/client/emr/patients/${selectedPatientId}/karton`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -112,7 +105,7 @@ export default function MedicalRecord() {
                 const historyData = await response.json();
                 setMedicalHistory(prev => ({
                     ...prev,
-                    [selectedPatientId]: historyData // Keširaj historiju
+                    [selectedPatientId]: historyData
                 }));
             } catch (err) {
                 console.error("Error fetching medical history:", err);
@@ -120,9 +113,8 @@ export default function MedicalRecord() {
             }
         };
 
-        // Pozovi kada se selectedPatientId promijeni ili kada se promijeni funkcija navigate (zbog ESLinta)
         fetchPatientHistory();
-    }, [selectedPatientId, navigate, medicalHistory]); // Dodajte medicalHistory kao dependency
+    }, [selectedPatientId, navigate, medicalHistory]);
 
     // Filtriraj odabranog pacijenta i historiju
     const selectedPatient = patients.find(p => p.id === Number(selectedPatientId));
@@ -148,7 +140,8 @@ export default function MedicalRecord() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8093/api/kartoni/${entryId}`, {
+            // AŽURIRANI URL: Poziva API Gateway na 8085, koji će rutirati na client-service
+            const response = await fetch(`http://localhost:8085/api/client/emr/kartoni/${entryId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -209,7 +202,8 @@ export default function MedicalRecord() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8093/api/kartoni/${selectedPatientId}/karton`, {
+            // AŽURIRANI URL: Poziva API Gateway na 8085, koji će rutirati na client-service
+            const response = await fetch(`http://localhost:8085/api/client/emr/patients/${selectedPatientId}/karton`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -217,7 +211,7 @@ export default function MedicalRecord() {
                 },
                 body: JSON.stringify({
                     ...newEntryData,
-                    patientId: Number(selectedPatientId) // Uvjerite se da je patientId broj
+                    patientId: Number(selectedPatientId)
                 })
             });
 
@@ -226,7 +220,7 @@ export default function MedicalRecord() {
                 throw new Error(`Failed to add medical record entry: ${response.status} - ${errorText}`);
             }
 
-            const addedEntry = await response.json(); // Pretpostavljamo da backend vraća dodani entitet sa ID-om
+            const addedEntry = await response.json();
             // Ažuriraj keširanu historiju dodavanjem novog unosa
             setMedicalHistory(prev => ({
                 ...prev,
@@ -256,7 +250,8 @@ export default function MedicalRecord() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8093/api/kartoni/${entryId}`, {
+            // AŽURIRANI URL: Poziva API Gateway na 8085, koji će rutirati na client-service
+            const response = await fetch(`http://localhost:8085/api/client/emr/kartoni/${entryId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

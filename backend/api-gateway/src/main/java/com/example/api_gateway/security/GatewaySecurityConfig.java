@@ -73,13 +73,15 @@ public class GatewaySecurityConfig {
                         // Naš JwtService u API Gatewayu sada uklanja "ROLE_" prefiks ako postoji.
                         .pathMatchers("/api/client/patients-with-invoices").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
                         .pathMatchers("/api/client/invoices/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/client/users/me").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/izvjestaji/summary/**").hasAnyRole("ADMIN", "STAFF", "DOCTOR") // Prilagodite uloge!
+                        .pathMatchers("/api/client/users/me").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")// Prilagodite uloge!
                         .pathMatchers("/api/emr/patients/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
                         .pathMatchers("/api/emr/medical-records/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
                         .pathMatchers("/api/emr/kartons/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/client/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
-                        .pathMatchers("/api/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .pathMatchers("/api/client/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
+                        .pathMatchers("/api/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
+                        .pathMatchers("/api/client/reports/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
+                        .pathMatchers("/izvjestaji/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
+                        .pathMatchers("/api/client/patient-emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF") // DODANO
                         // Svi ostali zahtjevi zahtijevaju autentifikaciju.
                         // Ovo je "catch-all" pravilo i treba biti zadnje.
                         .anyExchange().authenticated()

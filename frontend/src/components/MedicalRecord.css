@@ -51,10 +51,12 @@ h1 {
     line-height: 1.5;
 }
 
+/* Original .history-section styles - may be partially overridden by new styles below */
 .history-section {
     margin-top: 20px;
 }
 
+/* Original .history-table styles - these are likely no longer used directly by JSX */
 .history-table {
     width: 100%;
     border-collapse: collapse;
@@ -235,4 +237,230 @@ h1 {
 .history-table td textarea {
     min-height: 50px; /* Adjust height for textareas in table */
     resize: vertical;
+}
+
+/* --- NEW STYLES FOR MEDICAL RECORD CARDS --- */
+
+.medical-records-container {
+    margin-top: 20px;
+}
+
+.records-summary {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.summary-badge {
+    background: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.records-table {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.record-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.record-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+.record-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-bottom: 2px solid #4CAF50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.record-info h3 {
+    color: #2E7D32;
+    margin: 0 0 5px 0;
+    font-size: 1.3em;
+}
+
+.record-date {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.record-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-badge {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.diagnosis-badge {
+    background: #E3F2FD;
+    color: #1976D2;
+}
+
+.therapy-badge {
+    background: #E8F5E8;
+    color: #2E7D32;
+}
+
+.diagnoses-grid {
+    padding: 20px;
+}
+
+.diagnosis-row {
+    border-left: 4px solid #4CAF50;
+    margin-bottom: 25px;
+    background: #fafafa;
+    border-radius: 0 8px 8px 0;
+    overflow: hidden;
+}
+
+.diagnosis-main {
+    padding: 20px;
+    background: white;
+}
+
+.diagnosis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.diagnosis-name {
+    color: #2E7D32;
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.diagnosis-date {
+    background: #E8F5E8;
+    color: #2E7D32;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.diagnosis-description {
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.therapies-list {
+    background: #f8f9fa;
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.therapy-title {
+    color: #1976D2;
+    margin: 0 0 15px 0;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.therapy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.therapy-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.2s ease;
+}
+
+.therapy-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.therapy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.therapy-name {
+    color: #1976D2;
+    font-size: 0.95em;
+    flex: 1;
+}
+
+.therapy-period {
+    background: #E3F2FD;
+    color: #1976D2;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.therapy-instructions {
+    color: #666;
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.no-records {
+    text-align: center;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px dashed #dee2e6;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .record-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .diagnosis-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .therapy-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .therapy-grid {
+        grid-template-columns: 1fr;
+    }
 }

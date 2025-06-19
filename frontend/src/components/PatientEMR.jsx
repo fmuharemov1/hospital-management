@@ -1,76 +1,124 @@
-import React from 'react'; // Nema potrebe za useState ako nema stanja za odabir
-import './MedicalRecord.css'; // Možeš koristiti isti CSS ili napraviti novi
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import './MedicalRecord.css'; // Pretpostavljam da će CSS stilovi biti u ovom fajlu
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function PatientEMR() {
-    // HARDKODIRANI PODACI ZA PACIJENTA za demonstraciju.
-    // U PRAVOJ APLIKACIJI, ID pacijenta bi došao iz konteksta prijave (npr. userId iz tokena).
-    // Zatim bi se ti podaci (fullName, jmbg, history itd.) dohvatili s API-ja na osnovu tog ID-a.
-    const currentPatientId = 1; // Pretpostavljamo da je ovo ID prijavljenog pacijenta
+    const navigate = useNavigate();
+    const [patientInfo, setPatientInfo] = useState(null);
+    const [medicalHistory, setMedicalHistory] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const patients = [
-        {
-            id: 1,
-            fullName: 'John Doe',
-            jmbg: '1234567890123',
-            birthDate: '1985-04-12',
-            gender: 'Male',
-            contact: '+387 61 234 567',
-            address: 'Zmaja od Bosne bb, Sarajevo',
-        },
-        {
-            id: 2,
-            fullName: 'Ana Kovač',
-            jmbg: '9876543210987',
-            birthDate: '1990-10-05',
-            gender: 'Female',
-            contact: '+387 62 987 654',
-            address: 'Titova 10, Sarajevo',
-        }
-    ];
-
-    const medicalHistory = {
-        1: [ // za Johna
-            {
-                date: '2025-04-20',
-                time: '09:00',
-                doctor: 'Dr. Heart',
-                department: 'Cardiology',
-                diagnosis: 'Hypertension',
-                therapy: 'Lisinopril 10mg once daily',
-            },
-            {
-                date: '2025-05-01',
-                time: '13:30',
-                doctor: 'Dr. Brain',
-                department: 'Neurology',
-                diagnosis: 'Migraine',
-                therapy: 'Ibuprofen 400mg as needed',
-            },
-        ],
-        2: [ // za Anu
-            {
-                date: '2025-03-15',
-                time: '11:00',
-                doctor: 'Dr. Joint',
-                department: 'Orthopedics',
-                diagnosis: 'Knee pain',
-                therapy: 'Physical therapy 2x/week',
-            },
-        ]
+    const getAuthToken = () => {
+        return localStorage.getItem('token');
     };
 
-    // Direktno pronalazimo prijavljenog pacijenta i njegovu historiju
-    const selectedPatient = patients.find(p => p.id === currentPatientId);
-    const selectedHistory = medicalHistory[currentPatientId] || [];
+    // Dohvati informacije o trenutnom pacijentu
+    const fetchPatientInfo = async () => {
+        const token = getAuthToken();
+        if (!token) {
+            setError("Authentication token not found. Please log in.");
+            navigate('/login');
+            return;
+        }
 
-    // Ako pacijent nije pronađen (trebalo bi se rješavati u stvarnoj aplikaciji),
-    // možeš prikazati poruku o grešci ili preusmjeriti.
-    if (!selectedPatient) {
+        try {
+            const response = await fetch('http://localhost:8085/api/client/patient-emr/me', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch patient info: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Patient info received:", data);
+            setPatientInfo(data);
+        } catch (err) {
+            console.error("Error fetching patient info:", err);
+            setError(`Error loading patient info: ${err.message}`);
+        }
+    };
+
+    // Dohvati historiju trenutnog pacijenta
+    const fetchMedicalHistory = async () => {
+        const token = getAuthToken();
+        if (!token) return;
+
+        try {
+            const response = await fetch('http://localhost:8085/api/client/patient-emr/history', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch medical history: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Medical history received:", data);
+            setMedicalHistory(data);
+        } catch (err) {
+            console.error("Error fetching medical history:", err);
+            setError(`Error loading medical history: ${err.message}`);
+        }
+    };
+
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            // Fetch info and history concurrently for better performance
+            await Promise.all([
+                fetchPatientInfo(),
+                fetchMedicalHistory()
+            ]);
+
+            setIsLoading(false);
+        };
+
+        loadData();
+    }, [navigate]); // Added navigate to dependency array for useEffect best practices
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
+
+    // Ove funkcije za formatiranje su već postojale u vašem kodu, ostavio sam ih
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        try {
+            return new Date(dateString).toLocaleDateString('en-GB');
+        } catch (error) {
+            return dateString;
+        }
+    };
+
+    const formatDateTime = (dateString) => {
+        if (!dateString) return 'N/A';
+        try {
+            return new Date(dateString).toLocaleString('en-GB');
+        } catch (error) {
+            return dateString;
+        }
+    };
+
+    if (isLoading) {
+        return <div className="medical-record-page">Loading your medical record...</div>;
+    }
+
+    if (error) {
         return (
-            <div className="medical-record-page">
-                <p>Patient data not found. Please log in again.</p>
-                <Link to="/" className="nav-link">Log out</Link>
+            <div className="medical-record-page error-message">
+                <p>{error}</p>
+                <Link to="/login">Go to Login</Link>
             </div>
         );
     }
@@ -78,55 +126,100 @@ export default function PatientEMR() {
     return (
         <div className="medical-record-page">
             <nav className="navbar">
-                {/* Rute za pacijenta */}
                 <Link to="/profile" className="nav-link">Profile</Link>
                 <Link to="/appointments" className="nav-link">Appointments</Link>
-                <Link to="/emr-patient" className="nav-link active">E-Record</Link> {/* Nova ruta za pacijenta */}
-                <Link to="/" className="nav-link">Log out</Link>
+                <Link to="/patient-emr" className="nav-link active">E-Record</Link>
+                <button onClick={handleLogout} className="nav-link logout-button">Log out</button>
             </nav>
 
-            <h1>My E-Medical Record</h1> {/* Promijenjen naslov */}
+            <h1>My E-Medical Record</h1>
             <img src="/medapp-logo-removebg-preview.png" alt="MedApp Clinics Logo" className="logo" />
 
-            {/* Nema selektora za pacijente */}
-
-            <div className="patient-info">
-                {/* Prikaz osnovnih informacija o prijavljenom pacijentu */}
-                <div className="info-pair">
-                    <p><strong>Name:</strong> {selectedPatient.fullName}</p>
-                    <p><strong>JMBG:</strong> {selectedPatient.jmbg}</p>
+            {patientInfo && (
+                <div className="patient-info">
+                    <div className="info-pair">
+                        <p><strong>Name:</strong> {patientInfo.fullName}</p>
+                        <p><strong>Email:</strong> {patientInfo.email}</p>
+                    </div>
+                    {patientInfo.jmbg && (
+                        <div className="info-pair">
+                            <p><strong>JMBG:</strong> {patientInfo.jmbg}</p>
+                        </div>
+                    )}
                 </div>
-            </div>
+            )}
 
+            {/* Ažurirani deo za prikaz istorije */}
             <div className="history-section">
-                <h2>My Visit History</h2> {/* Promijenjen naslov */}
-                {selectedHistory.length > 0 ? (
-                    <table className="history-table">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Doctor</th>
-                            <th>Department</th>
-                            <th>Diagnosis</th>
-                            <th>Therapy</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {selectedHistory.map((entry, index) => (
-                            <tr key={index}>
-                                <td>{entry.date}</td>
-                                <td>{entry.time}</td>
-                                <td>{entry.doctor}</td>
-                                <td>{entry.department}</td>
-                                <td>{entry.diagnosis}</td>
-                                <td>{entry.therapy}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                <h2>My Visit History</h2>
+                {medicalHistory && medicalHistory.length > 0 ? (
+                    <div className="medical-records-container">
+                        <div className="records-table">
+                            {medicalHistory.map((karton, kartonIndex) => (
+                                <div key={karton.id || kartonIndex} className="record-card">
+                                    <div className="record-header">
+                                        <div className="record-info">
+                                            <h3 className="record-title">Medical Record #{karton.brojKartona}</h3>
+                                            {/* Koristite formatDate funkciju koju ste već definisali */}
+                                            <span className="record-date">📅 {formatDate(karton.datumKreiranja)}</span>
+                                        </div>
+                                        <div className="record-stats">
+                                            <span className="stat-badge diagnosis-badge">
+                                                {karton.dijagnoze?.length || 0} Diagnoses
+                                            </span>
+                                            <span className="stat-badge therapy-badge">
+                                                {karton.dijagnoze?.reduce((total, d) => total + (d.terapije?.length || 0), 0) || 0} Therapies
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {karton.dijagnoze && karton.dijagnoze.length > 0 && (
+                                        <div className="diagnoses-grid">
+                                            {karton.dijagnoze.map((dijagnoza, dijagnozaIndex) => (
+                                                <div key={dijagnoza.id || dijagnozaIndex} className="diagnosis-row">
+                                                    <div className="diagnosis-main">
+                                                        <div className="diagnosis-header">
+                                                            <h4 className="diagnosis-name">{dijagnoza.naziv}</h4>
+                                                            {/* Koristite formatDate funkciju */}
+                                                            <span className="diagnosis-date">
+                                                                {formatDate(dijagnoza.datumDijagnoze)}
+                                                            </span>
+                                                        </div>
+                                                        <p className="diagnosis-description">{dijagnoza.opis}</p>
+                                                    </div>
+
+                                                    {dijagnoza.terapije && dijagnoza.terapije.length > 0 && (
+                                                        <div className="therapies-list">
+                                                            <h5 className="therapy-title">💊 Prescribed Treatments:</h5>
+                                                            <div className="therapy-grid">
+                                                                {dijagnoza.terapije.map((terapija, terapijaIndex) => (
+                                                                    <div key={terapija.id || terapijaIndex} className="therapy-item">
+                                                                        <div className="therapy-header">
+                                                                            <strong className="therapy-name">{terapija.naziv}</strong>
+                                                                            <span className="therapy-period">
+                                                                                {/* Koristite formatDate funkciju */}
+                                                                                {formatDate(terapija.datumPocetka)} - {formatDate(terapija.datumZavrsetka)}
+                                                                            </span>
+                                                                        </div>
+                                                                        <p className="therapy-instructions">{terapija.opis}</p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 ) : (
-                    <p>No previous visits recorded for you.</p>
+                    <div className="no-records">
+                        <p>No previous visits recorded for you.</p>
+                        <p>Your medical history will appear here after your first visit.</p>
+                    </div>
                 )}
             </div>
         </div>
