@@ -112,17 +112,22 @@ public class PatientEmrController {
 
     // DODAJTE OVU METODU:
     private String getCurrentUserEmail(Authentication authentication) {
-        // Ako koristite JWT, možda možete pristupiti email-u direktno
-        // Alternativno, možete mapirati username na email
-        String username = authentication.getName();
+        String username = authentication.getName(); // Ovo vraća npr. "dr" ili "hbeslic"
 
-        // ZA SADA - hard-coded mapping
-        if ("hbeslic".equals(username)) {
-            return "hbeslic@gmail.com";
+        // Proverite da li username već sadrži '@'
+        // Ovo je važno kako ne biste duplirali "@gmail.com" ako se JWT generiše drugačije.
+        if (username != null && username.contains("@")) {
+            System.out.println("=== User identified as full email: " + username);
+            return username; // Ako je već puni email (npr. "dr@gmail.com"), vrati ga takvog
         }
 
-        return username; // fallback
+        // AKO JE OVDE - username NE SADRŽI '@'
+        // Dodajemo "@gmail.com" na username
+        String emailWithDomain = username + "@gmail.com";
+        System.out.println("=== Generated email by appending @gmail.com: " + emailWithDomain);
+        return emailWithDomain;
     }
+
     @PostConstruct
     public void showMappings() {
         System.out.println("=== PatientEmrController ENDPOINTS ===");
