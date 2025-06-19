@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/termini")
-
 public class TerminController {
     private final TerminService terminService;
 

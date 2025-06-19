@@ -1,30 +1,31 @@
-import React, { useState } from 'react';
-import './Rooms.css'; // Keep your existing CSS
+import React, { useState, useEffect } from 'react';
+import './Rooms.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Rooms() {
-    // Dummy patient data for demonstration
-    const patients = [
-        { id: 1, name: 'John Doe' },
-        { id: 2, name: 'Jane Smith' },
-        { id: 3, name: 'Michael Johnson' },
-    ];
-
-    // Initial room data
-    const initialRooms = [
-        { room_number: '101', capacity: 2, status: 'Available', current_patient: null },
-        { room_number: '102', capacity: 1, status: 'Occupied', current_patient: 'Jane Smith' },
-        { room_number: '103', capacity: 3, status: 'Available', current_patient: null },
-        { room_number: '104', capacity: 2, status: 'Occupied', current_patient: 'Michael Johnson' },
-        { room_number: '105', capacity: 1, status: 'Available', current_patient: null },
-    ];
-
-    const [rooms, setRooms] = useState(initialRooms); // Use state to manage rooms
+    const [patients, setPatients] = useState([]);
+    const [rooms, setRooms] = useState([]);
     const [selectedRoomNumber, setSelectedRoomNumber] = useState('');
-    const [selectedPatientId, setSelectedPatientId] = useState(''); // State for selected patient to book
+    const [selectedPatientId, setSelectedPatientId] = useState('');
+    const [selectedDischargePatients, setSelectedDischargePatients] = useState([]);
+    const [selectedAddPatients, setSelectedAddPatients] = useState([]);  // Za masovno dodavanje
 
-    // Find the selected room by its number
-    const selectedRoom = rooms.find(room => room.room_number === selectedRoomNumber);
+    const refreshData = () => {
+        axios.get('http://localhost:8088/korisnici/tip/pacijenti')
+            .then(response => setPatients(response.data))
+            .catch(error => console.error('Greška pri dohvatu pacijenata:', error));
+
+        axios.get('http://localhost:8088/sobe')
+            .then(response => setRooms(response.data))
+            .catch(error => console.error('Greška pri dohvatu soba:', error));
+    };
+
+    useEffect(() => {
+        refreshData();
+    }, []);
+
+    const selectedRoom = rooms.find(room => room.broj_sobe === selectedRoomNumber);
 
     const handleBooking = () => {
         if (!selectedRoomNumber || !selectedPatientId) {
@@ -32,29 +33,76 @@ export default function Rooms() {
             return;
         }
 
-        const patientToBook = patients.find(p => p.id === parseInt(selectedPatientId));
+        const patch = [
+            { op: 'replace', path: '/role/soba/id', value: selectedRoom.id }
+        ];
 
-        if (!patientToBook) {
-            alert('Selected patient not found.');
+        axios.patch(`http://localhost:8088/korisnici/${selectedPatientId}/dodijeliSobu`, patch, {
+            headers: { 'Content-Type': 'application/json-patch+json' }
+        })
+        .then(() => {
+            alert(`Room ${selectedRoomNumber} successfully booked!`);
+            refreshData();
+        })
+        .catch(error => {
+            console.error('Greška pri dodjeli sobe:', error);
+            alert('Greška pri dodjeli sobe.');
+        });
+
+        setSelectedRoomNumber('');
+        setSelectedPatientId('');
+    };
+
+    const togglePatientSelection = (patientId, setSelectedArray) => {
+        setSelectedArray(prev =>
+            prev.includes(patientId)
+                ? prev.filter(id => id !== patientId)
+                : [...prev, patientId]
+        );
+    };
+
+    const handleDischarge = () => {
+        if (!selectedRoom || selectedDischargePatients.length === 0) {
+            alert('Odaberite sobu i barem jednog pacijenta za otpust.');
             return;
         }
 
-        setRooms(prevRooms =>
-            prevRooms.map(room => {
-                if (room.room_number === selectedRoomNumber && room.status === 'Available') {
-                    return {
-                        ...room,
-                        status: 'Occupied',
-                        current_patient: patientToBook.name,
-                    };
-                }
-                return room;
+        const payload = {
+            pacijentIds: selectedDischargePatients
+        };
+
+        axios.post(`http://localhost:8088/sobe/${selectedRoom.id}/otpusti-pacijente`, payload)
+            .then(() => {
+                alert('Pacijenti uspješno otpušteni.');
+                refreshData();
+                setSelectedDischargePatients([]);
             })
-        );
-        alert(`Room ${selectedRoomNumber} successfully booked for ${patientToBook.name}!`);
-        // Optionally reset selection
-        setSelectedRoomNumber('');
-        setSelectedPatientId('');
+            .catch(error => {
+                console.error('Greška pri otpustu pacijenata:', error);
+                alert('Greška pri otpustu pacijenata.');
+            });
+    };
+
+    const handleAddPatients = () => {
+        if (!selectedRoom || selectedAddPatients.length === 0) {
+            alert('Odaberite sobu i barem jednog pacijenta za dodavanje.');
+            return;
+        }
+
+        const payload = {
+            pacijentIds: selectedAddPatients
+        };
+
+        axios.post(`http://localhost:8088/sobe/${selectedRoom.id}/dodaj-pacijente`, payload)
+            .then(() => {
+                alert('Pacijenti uspješno dodani u sobu.');
+                refreshData();
+                setSelectedAddPatients([]);
+            })
+            .catch(error => {
+                console.error('Greška pri dodavanju pacijenata:', error);
+                alert('Greška pri dodavanju pacijenata.');
+            });
     };
 
     return (
@@ -62,11 +110,12 @@ export default function Rooms() {
             <h1>Room Overview</h1>
             <img src="/medapp-logo-removebg-preview.png" alt="MedApp Clinics Logo" className="logo" />
             <nav className="navbar">
-                <Link to="/rooms" className="nav-link active">Rooms</Link> {/* Mark Rooms as active */}
+                <Link to="/rooms" className="nav-link active">Rooms</Link>
                 <Link to="/dr-appointments" className="nav-link">Appointments</Link>
                 <Link to="/emr" className="nav-link">E-Record</Link>
                 <Link to="/" className="nav-link">Log out</Link>
             </nav>
+
             <div style={{ marginBottom: '20px' }}>
                 <label htmlFor="roomSelect" style={{ marginRight: '10px', fontWeight: 'bold' }}>Select a Room:</label>
                 <select
@@ -74,14 +123,16 @@ export default function Rooms() {
                     value={selectedRoomNumber}
                     onChange={e => {
                         setSelectedRoomNumber(e.target.value);
-                        setSelectedPatientId(''); // Reset patient selection when room changes
+                        setSelectedPatientId('');
+                        setSelectedDischargePatients([]);
+                        setSelectedAddPatients([]);
                     }}
                     style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ccc' }}
                 >
                     <option value="">-- Select --</option>
                     {rooms.map(room => (
-                        <option key={room.room_number} value={room.room_number}>
-                            Room {room.room_number}
+                        <option key={room.broj_sobe} value={room.broj_sobe}>
+                            Room {room.broj_sobe}
                         </option>
                     ))}
                 </select>
@@ -90,18 +141,19 @@ export default function Rooms() {
             {selectedRoom ? (
                 <div style={{ border: '1px solid #00b894', borderRadius: '8px', padding: '20px', backgroundColor: '#e0f2f1' }}>
                     <h2>Room Details</h2>
-                    <p><strong>Room Number:</strong> {selectedRoom.room_number}</p>
-                    <p><strong>Capacity:</strong> {selectedRoom.capacity} {selectedRoom.capacity > 1 ? 'people' : 'person'}</p>
+                    <p><strong>Room Number:</strong> {selectedRoom.broj_sobe}</p>
+                    <p><strong>Capacity:</strong> {selectedRoom.kapacitet} {selectedRoom.kapacitet > 1 ? 'people' : 'person'}</p>
                     <p>
                         <strong>Status:</strong> {selectedRoom.status}
-                        {selectedRoom.status === 'Occupied' && selectedRoom.current_patient &&
+                        {selectedRoom.status === 'Popunjena' && selectedRoom.current_patient &&
                             <span> (Patient: {selectedRoom.current_patient})</span>
                         }
                     </p>
 
-                    {selectedRoom.status === 'Available' && (
+                    {/* Individual booking */}
+                    {(selectedRoom.status === 'Slobodna' || selectedRoom.status === 'Dostupna') && (
                         <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #00b894' }}>
-                            <h3>Book Room {selectedRoom.room_number}</h3>
+                            <h3>Book Room {selectedRoom.broj_sobe}</h3>
                             <label htmlFor="patientSelect" style={{ marginRight: '10px', fontWeight: 'bold' }}>Select Patient:</label>
                             <select
                                 id="patientSelect"
@@ -112,7 +164,7 @@ export default function Rooms() {
                                 <option value="">-- Select Patient --</option>
                                 {patients.map(patient => (
                                     <option key={patient.id} value={patient.id}>
-                                        {patient.name}
+                                        {patient.ime} {patient.prezime}
                                     </option>
                                 ))}
                             </select>
@@ -121,6 +173,68 @@ export default function Rooms() {
                                 style={{ padding: '10px 15px', backgroundColor: '#00b894', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
                             >
                                 Book Room
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Mass add patients */}
+                    {(selectedRoom.status === 'Slobodna' || selectedRoom.status === 'Dostupna') && (
+                        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #0984e3' }}>
+                            <h3>Add Multiple Patients to Room {selectedRoom.broj_sobe}</h3>
+                            <p>Select patients to add:</p>
+                            <ul style={{ listStyle: 'none', padding: 0, maxHeight: '150px', overflowY: 'auto' }}>
+                                {patients
+                                    .filter(p => !p.role?.soba || p.role.soba.id !== selectedRoom.id) // Only patients NOT already in this room
+                                    .map(patient => (
+                                        <li key={patient.id}>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedAddPatients.includes(patient.id)}
+                                                    onChange={() => togglePatientSelection(patient.id, setSelectedAddPatients)}
+                                                    style={{ marginRight: '8px' }}
+                                                />
+                                                {patient.ime} {patient.prezime}
+                                            </label>
+                                        </li>
+                                    ))}
+                            </ul>
+                            <button
+                                onClick={handleAddPatients}
+                                style={{ padding: '10px 15px', backgroundColor: '#0984e3', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                            >
+                                Add Selected Patients
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Discharge patients */}
+                    {patients.some(p => p.role?.soba?.id === selectedRoom.id) && (
+                        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #00b894' }}>
+                            <h3>Discharge Patients from Room {selectedRoom.broj_sobe}</h3>
+                            <p>Select patients to discharge:</p>
+                            <ul style={{ listStyle: 'none', padding: 0 }}>
+                                {patients
+                                    .filter(p => p.role?.soba?.id === selectedRoom.id)
+                                    .map(patient => (
+                                        <li key={patient.id}>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedDischargePatients.includes(patient.id)}
+                                                    onChange={() => togglePatientSelection(patient.id, setSelectedDischargePatients)}
+                                                    style={{ marginRight: '8px' }}
+                                                />
+                                                {patient.ime} {patient.prezime}
+                                            </label>
+                                        </li>
+                                    ))}
+                            </ul>
+                            <button
+                                onClick={handleDischarge}
+                                style={{ padding: '10px 15px', backgroundColor: '#d63031', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                            >
+                                Discharge Selected
                             </button>
                         </div>
                     )}

@@ -8,4 +8,5 @@ import java.util.List;
 public interface KorisnikRepository extends JpaRepository<Korisnik, Long> {
     long countByRole_Soba_Id(Long sobaId);
     List<Korisnik> findAllById(Iterable<Long> ids);
+    List<Korisnik> findByRole_TipKorisnika(String tipKorisnika);
 }

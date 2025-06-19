@@ -104,7 +104,7 @@ public class SobaService {
         // Update status ako više nije puna
         long preostaliPacijenti = korisnikRepository.countByRole_Soba_Id(sobaId);
         if (preostaliPacijenti < soba.getKapacitet()) {
-            soba.setStatus("Dostupna");
+            soba.setStatus("Slobodna");
             sobaRepository.save(soba);
         }
     }

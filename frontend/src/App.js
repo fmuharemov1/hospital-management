@@ -7,6 +7,7 @@ import Profile from './components/Profile';
 import Appointments from './components/Appointments';
 import Invoice from './components/Invoice';
 import Reports from './components/Reports';
+import Rooms from './components/Rooms';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
           <Route path="/appointments" element={<Appointments />} />
           <Route path={"/invoices"} element={<Invoice />} />
           <Route path={"/reports"} element={<Reports />} />
+          <Route path="/rooms" element={<Rooms />} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -1,9 +1,11 @@
 package ba.unsa.etf.hospital.controller;
 
 import ba.unsa.etf.hospital.model.Korisnik;
+import ba.unsa.etf.hospital.repository.KorisnikRepository;
 import ba.unsa.etf.hospital.service.KorisnikService;
 import com.github.fge.jsonpatch.JsonPatch;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ba.unsa.etf.hospital.exception.KorisnikNotFoundException;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/korisnici")
 public class KorisnikController {
     private final KorisnikService korisnikService;
+    @Autowired
+    private KorisnikRepository korisnikRepository;
 
     public KorisnikController(KorisnikService korisnikService) {
         this.korisnikService = korisnikService;
@@ -59,5 +63,10 @@ public class KorisnikController {
             @PathVariable Long id,
             @RequestBody JsonPatch patch) {
         return korisnikService.patchKorisnik(id, patch);
+    }
+
+    @GetMapping("/tip/pacijenti")
+    public List<Korisnik> getPacijenti() {
+        return korisnikRepository.findByRole_TipKorisnika("Pacijent");
     }
 }
