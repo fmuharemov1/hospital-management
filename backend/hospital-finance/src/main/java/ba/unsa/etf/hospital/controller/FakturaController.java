@@ -1,6 +1,7 @@
 package ba.unsa.etf.hospital.controller;
 
 
+import ba.unsa.etf.hospital.dto.PatientInvoiceDTO;
 import ba.unsa.etf.hospital.exception.FakturaNotFoundException;
 import ba.unsa.etf.hospital.model.Faktura;
 import ba.unsa.etf.hospital.service.FakturaService;
@@ -69,5 +70,11 @@ public ResponseEntity<List<Faktura>> saveBatchFakture(@RequestBody List<Faktura>
         List<Faktura> fakture = fakturaService.getFaktureByTerminId(terminId);
         return ResponseEntity.ok(fakture);
     }
+    @GetMapping("/patients-with-invoices")
+    public ResponseEntity<List<PatientInvoiceDTO>> getPatientsWithInvoices() {
+        List<PatientInvoiceDTO> result = fakturaService.getAllPatientsWithInvoices();
+        return ResponseEntity.ok(result);
+    }
+
 
 }

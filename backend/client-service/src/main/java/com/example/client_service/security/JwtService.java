@@ -3,20 +3,20 @@ package com.example.client_service.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import io.jsonwebtoken.io.Decoders; // KLJUČNA IZMJENA: Koristi JJWT-ov Decoders
+import io.jsonwebtoken.io.Decoders;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails; // Ostavljeno ako je potrebno za druge metode
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors; // Dodajte import za stream
+import java.util.stream.Collectors;
 
-import com.example.client_service.model.User; // Pretpostavka da User model postoji ovdje
+import com.example.client_service.model.User;
 
 @Service
 public class JwtService {
@@ -24,7 +24,6 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    // Ažurirani konstruktor za bolji pregled ključa
     public JwtService(@Value("${jwt.secret}") String secret) {
         this.secret = secret;
         System.out.println("--- Auth JWT Service Init: Secret loaded (first 10 chars): " + secret.substring(0, Math.min(secret.length(), 10)) + "...");
@@ -33,7 +32,6 @@ public class JwtService {
     private Key getSigningKey() {
         System.out.println("--- Auth JWT Service DEBUG: getSigningKey() called.");
         try {
-            // KLJUČNA IZMJENA: Koristi Decoders.BASE64.decode() za konzistentnost
             byte[] keyBytes = Decoders.BASE64.decode(secret);
             Key key = Keys.hmacShaKeyFor(keyBytes);
             System.out.println("--- Auth JWT Service DEBUG: Secret Key generated for signing.");
@@ -44,40 +42,25 @@ public class JwtService {
         }
     }
 
-    /**
-     * Generiše JWT token za datog korisnika (User objekat).
-     * Sada uključuje uloge i druge korisničke podatke kao claimove.
-     * @param user User objekat (model)
-     * @return generisani JWT token
-     */
     public String generateToken(User user) {
         System.out.println("--- Auth JWT Service DEBUG: generateToken() called for user: " + user.getUsername());
         Map<String, Object> claims = new HashMap<>();
 
-        // Dodajte uloge u claims
-        // Pretpostavka: User model ima getRole() metodu koja vraća Role enum
-        // Konvertujemo Role enum u String (npr. "ROLE_ADMIN")
         if (user.getRole() != null) {
-            // Pretpostavimo da je uloga spremljena kao ROLE_NAME (npr. "ROLE_USER")
-            // A extractRoles u API Gatewayu očekuje List<String>.
-            // Ako je vaša uloga jednostavan String, onda:
-            // claims.put("roles", Collections.singletonList(user.getRole().name()));
-            // Ako je uloga složeniji objekt, prilagodite.
-            claims.put("roles", Collections.singletonList("ROLE_" + user.getRole().name())); // Npr. ["ROLE_USER"]
+            claims.put("roles", Collections.singletonList("ROLE_" + user.getRole().name()));
         } else {
             claims.put("roles", Collections.emptyList());
         }
 
-        // Dodajte ostale korisničke detalje kao custom claimove
-        claims.put("fullName", user.getFullName()); // Koristi getFullName() iz User modela
-        claims.put("email", user.getEmail());// Pretpostavka da User model ima getPhone()
+        claims.put("fullName", user.getFullName());
+        claims.put("email", user.getEmail());
 
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expirationTime = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10); // 10h
 
         String token = Jwts.builder()
-                .setClaims(claims) // Postavite sve claimove
-                .setSubject(user.getUsername()) // Korisničko ime kao subject
+                .setClaims(claims)
+                .setSubject(user.getUsername())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expirationTime)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -86,8 +69,7 @@ public class JwtService {
         return token;
     }
 
-
-    public boolean isTokenValid(String token, UserDetails userDetails) { // Promijenjeno iz UserDetails username
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         System.out.println("--- Auth JWT Service DEBUG: isTokenValid() called for user: " + userDetails.getUsername());
         final String extractedUsername = extractUsername(token);
         boolean isValid = (extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -129,7 +111,7 @@ public class JwtService {
         } catch (IllegalArgumentException e) {
             System.err.println("--- Auth JWT Service ERROR: JWT CLAIMS STRING IS EMPTY/MALFORMED: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nevažeći token: Prazan ili pogrešan token");
-        } catch (Exception e) { // Hvata sve ostale neočekivane izuzetke
+        } catch (Exception e) {
             System.err.println("--- Auth JWT Service ERROR: UNKNOWN JWT ERROR: " + e.getClass().getName() + " - " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nevažeći token: Nepoznata greška");
         }

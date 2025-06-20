@@ -1,19 +1,24 @@
 package ba.unsa.etf.hospital.service;
 
 import ba.unsa.etf.hospital.client.TerminiClient;
+import ba.unsa.etf.hospital.dto.PatientInvoiceDTO;
 import ba.unsa.etf.hospital.exception.FakturaNotFoundException;
 import ba.unsa.etf.hospital.model.Faktura;
+import ba.unsa.etf.hospital.model.Korisnik;
 import ba.unsa.etf.hospital.repository.FakturaRepository;
 import ba.unsa.etf.hospital.model.PaymentRollbackEvent;
+import ba.unsa.etf.hospital.repository.KorisnikRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FakturaService {
@@ -21,6 +26,8 @@ public class FakturaService {
     private final FakturaRepository fakturaRepository;
     private final TerminiClient terminiClient;
     private static final Logger log = LoggerFactory.getLogger(FakturaService.class);
+    @Autowired
+    private KorisnikRepository korisnikRepository;
 
     public FakturaService(FakturaRepository fakturaRepository, TerminiClient terminiClient) {
         this.fakturaRepository = fakturaRepository;
@@ -76,6 +83,13 @@ public class FakturaService {
 
     public List<Faktura> getFaktureByTerminId(Long terminId) {
         return fakturaRepository.findByTerminId(terminId);
+    }
+    public List<PatientInvoiceDTO> getAllPatientsWithInvoices() {
+        List<Korisnik> patients = korisnikRepository.findAll(); // ili filtriraj ako treba
+        return patients.stream().map(p -> {
+            List<Faktura> fakture = fakturaRepository.findByKorisnikId(p.getId());
+            return new PatientInvoiceDTO(p.getId(), p.getFullName(), p.getEmail(), p.getPhone(), fakture);
+        }).collect(Collectors.toList());
     }
 
     // ✅ Dodano za rollback

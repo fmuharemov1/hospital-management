@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: clientdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  mysql:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hospital
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+
+  config-server:
+    build:
+      context: ./backend/config-server
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  eureka:  # <-- OVO JE NAJVAŽNIJA PROMJENA
+    build:
+      context: ./backend/Eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - eureka
+      - config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  client-service:
+    build:
+      context: ./backend/client-service
+      dockerfile: Dockerfile
+    ports:
+      - "8092:8092"
+    depends_on:
+      - eureka
+      - config-server
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  hospital-appointments:
+    build:
+      context: ./backend/hospital-appointments
+      dockerfile: Dockerfile
+    ports:
+      - "8093:8093"
+    depends_on:
+      - eureka
+      - config-server
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  hospital-finance:
+    build:
+      context: ./backend/hospital-finance
+      dockerfile: Dockerfile
+    ports:
+      - "8094:8094"
+    depends_on:
+      - eureka
+      - config-server
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  emr:
+    build:
+      context: ./backend/EMR
+      dockerfile: Dockerfile
+    ports:
+      - "8095:8095"
+    depends_on:
+      - eureka
+      - config-server
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml
+
+  system-events:
+    build:
+      context: ./backend/system-events
+      dockerfile: Dockerfile
+    ports:
+      - "9091:9091"
+    depends_on:
+      - eureka
+      - config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ~/.m2:/root/.m2
+      - ./pom.xml:/app/../pom.xml

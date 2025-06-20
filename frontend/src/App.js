@@ -7,6 +7,8 @@ import Profile from './components/Profile';
 import Appointments from './components/Appointments';
 import Invoice from './components/Invoice';
 import Reports from './components/Reports';
+import PatientEMR from './components/PatientEMR';
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 function App() {
@@ -40,10 +42,26 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/appointments" element={<Appointments />} />
-          <Route path={"/invoices"} element={<Invoice />} />
-          <Route path={"/reports"} element={<Reports />} />
+        <Route path="/profile" element={
+          <ProtectedRoute><Profile /></ProtectedRoute>
+        } />
+
+        <Route path="/appointments" element={
+          <ProtectedRoute><Appointments /></ProtectedRoute>
+        } />
+
+        <Route path="/invoices" element={
+          <ProtectedRoute><Invoice /></ProtectedRoute>
+        } />
+
+        <Route path="/reports" element={
+          <ProtectedRoute><Reports /></ProtectedRoute>
+        } />
+
+        <Route path="/patient-emr" element={
+          <ProtectedRoute><PatientEMR /></ProtectedRoute>
+        } />
+
         </Routes>
       </div>
     </BrowserRouter>

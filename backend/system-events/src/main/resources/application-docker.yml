@@ -1,0 +1,19 @@
+server:
+  port: 9091
+
+spring:
+  application:
+    name: system-events
+  datasource:
+    url: jdbc:mysql://mysql:3306/system_events_db
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka

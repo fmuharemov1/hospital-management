@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+spring:
+  profiles:
+    active: docker
+  application:
+    name: emr
+  datasource:
+    url: jdbc:mysql://mysql:3306/emr_db
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+grpc:
+  client:
+    system-events:
+      address: static://system-events:9091
+      enable-keep-alive: true
+      negotiation-type: plaintext

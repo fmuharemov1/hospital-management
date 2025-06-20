@@ -54,7 +54,7 @@
       <module name="hospital-appointments" options="-parameters" />
       <module name="hospital-finance" options="-parameters" />
       <module name="hospital-management" options="" />
-      <module name="logging-core" options="-parameters" />
+      <module name="logging-core" options="" />
       <module name="system-events" options="-parameters" />
     </option>
   </component>

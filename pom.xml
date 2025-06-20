@@ -17,7 +17,6 @@
     <packaging>pom</packaging>
     <name>hospital-management</name>
 
-    <!-- Lista svih modula -->
     <modules>
         <module>backend/client-service</module>
         <module>backend/hospital-finance</module>
@@ -28,9 +27,8 @@
         <module>backend/config-server</module>
         <module>backend/Eureka</module>
         <module>backend/EMR</module>
-        <module>backend/logging-core</module>
-    </modules>
 
+    </modules>
 
     <properties>
         <java.version>17</java.version>
@@ -39,22 +37,18 @@
         <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
 
-    <!-- Upravljanje verzijama dependency-ja -->
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2023.0.1</version>
+                <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
-
-
-    <!-- Repozitoriji -->
     <repositories>
         <repository>
             <id>spring-releases</id>

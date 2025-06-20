@@ -37,7 +37,7 @@ eureka:
     lease-expiration-duration-in-seconds: 30
 
 jwt:
-  secret: VGhpcy1pcy1hLXN1cGVyLXNlY3VyZS1zZWNyZXQta2V5LXRvLWdlbmVyYXRlLUpXVHMhIQ==
+  secret: VGhpcy1pcy1hLXN1cGVyLXN1cGVyLXNlY3VyZS1zZWNyZXQta2V5LXRvLWdlbmVyYXRlLUpXVHMhIQ==
 
 logging:
   level:
@@ -58,3 +58,6 @@ grpc:
       address: discovery:///system-events
       enableKeepAlive: true
       negotiationType: plaintext
+
+  profiles:
+    active: docker

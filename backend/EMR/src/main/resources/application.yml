@@ -55,3 +55,5 @@ grpc:
       address: static://localhost:9095
       enableKeepAlive: true
       negotiationType: plaintext
+  profiles:
+    active: docker
