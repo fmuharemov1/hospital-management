@@ -72,16 +72,21 @@ public class GatewaySecurityConfig {
                         // Ako je u JWT-u samo "USER", onda hasAnyRole("USER").
                         // Naš JwtService u API Gatewayu sada uklanja "ROLE_" prefiks ako postoji.
                         .pathMatchers("/api/client/patients-with-invoices").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/client/invoices/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
+                        .pathMatchers("/api/client/invoices/**").hasAnyRole("ADMIN")
                         .pathMatchers("/api/client/users/me").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")// Prilagodite uloge!
-                        .pathMatchers("/api/emr/patients/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/emr/medical-records/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/emr/kartons/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/client/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/client/reports/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/izvjestaji/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF")
-                        .pathMatchers("/api/client/patient-emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF") // DODANO
+                        .pathMatchers("/api/emr/patients/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/emr/medical-records/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/emr/kartons/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/client/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/client/reports/**").hasAnyRole( "ADMIN")
+                        .pathMatchers("/izvjestaji/**").hasAnyRole("ADMIN")
+                        .pathMatchers("/api/client/patient-emr/**").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/client/emr/kartoni/*/dijagnoze").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/client/emr/dijagnoze/*/terapije").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/client/emr/dijagnoze/*").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")
+                        .pathMatchers("/api/client/emr/terapije/*").hasAnyRole("USER", "ADMIN", "DOCTOR", "STAFF", "ROLE_DOCTOR", "ROLE_USER", "ROLE_ADMIN")// DODANO
+                        .pathMatchers("/api/client/izvjestaji/**").hasAnyRole("ADMIN")
                         // Svi ostali zahtjevi zahtijevaju autentifikaciju.
                         // Ovo je "catch-all" pravilo i treba biti zadnje.
                         .anyExchange().authenticated()

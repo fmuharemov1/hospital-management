@@ -15,6 +15,12 @@ spring:
     gateway:
       routes:
         # 1. NAJSPECIFIČNIJE RUTE PRVO (po dužini patha)
+        - id: client-emr-bypass
+          uri: lb://CLIENT-SERVICE
+          predicates:
+            - Path=/api/client/emr/kartoni/*/dijagnoze
+          filters:
+            - AddRequestHeader=X-Internal-Request, true
         - id: client-patient-emr
           uri: lb://CLIENT-SERVICE
           predicates:

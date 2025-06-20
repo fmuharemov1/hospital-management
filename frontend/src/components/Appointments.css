@@ -122,3 +122,26 @@ h3{
 .cancel-button:hover {
     background-color: #c82333;
 }
+.slot-item {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Suptilno naglašena zauzeta polja */
+.slot-item.booked {
+    background-color: #fdf4f4; /* nježna crvena nijansa */
+    border: 1px solid #f3dcdc;
+    color: #772727;
+}
+
+/* Suptilno označeni slobodni termini */
+.slot-item.available {
+    background-color: #f4fdf7; /* nježna zelena nijansa */
+    border: 1px solid #dcefe3;
+    color: #295d3e;
+}

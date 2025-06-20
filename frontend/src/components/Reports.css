@@ -1,49 +1,482 @@
-.reports-page {
-    text-align: center;
-    padding: 40px 20px;
-    color: white;
-}
-
 .report-selector {
-    margin: 20px 0;
+    margin: 20px 0; /* Vaša definicija */
 }
-
+/* --- Reports Page Container (Ažurirano prema vašoj definiciji) --- */
+.reports-page {
+    text-align: center; /* Vaša definicija */
+    padding: 40px 20px; /* Vaša definicija */
+    color: white; /* Vaša definicija */
+    max-width: 1200px; /* Dodatno za širu tabelu */
+    margin: 80px auto; /* Centriranje */
+    background-color: #007f5f; /* Bijela pozadina */
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
 .report-selector label {
-    font-size: 18px;
-    margin-right: 10px;
+    font-size: 18px; /* Vaša definicija */
+    margin-right: 10px; /* Vaša definicija */
+    color: #555; /* Dodatna boja teksta za labelu unutar bijelog kartona */
 }
 
 .report-selector select {
-    padding: 8px 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    background-color: #007f5f;
-    color: white;
+    padding: 8px 12px; /* Vaša definicija */
+    font-size: 16px; /* Vaša definicija */
+    border-radius: 6px; /* Vaša definicija */
+    border: none; /* Vaša definicija */
+    background-color: #dddddd; /* Vaša definicija */
+    color: #004d40; /* Vaša definicija */
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Zadržano za bolji UX */
+}
+
+.report-selector select:focus {
+    outline: none;
+    border-color: #009688;
+    box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.2);
+}
+
+/* --- Loading / Error Messages (Ostaju nepromijenjeni) --- */
+.loading, .error-message, .no-reports-message {
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+.loading {
+    background-color: #e0f2f7;
+    color: #2196F3;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ef9a9a;
+}
+
+.no-reports-message {
+    border: 1px dashed #ccc;
+}
+
+/* --- Report Summary Section (Ažurirano prema vašoj definiciji) --- */
+.report-summary {
+    margin-top: 40px;
+    text-align: center;
+    color: #333; /* Dodano, jer je container sada bijeli */
+}
+
+.report-summary h2 {
+    font-size: 24px;
+    color: #007f5f;
+    margin-bottom: 25px;
 }
 
 .report-results {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin-top: 30px;
-    flex-wrap: wrap;
+    gap: 30px; /* Vaša definicija */
+    margin-top: 30px; /* Vaša definicija */
+    flex-wrap: wrap; /* Vaša definicija */
 }
 
 .report-card {
-    background-color: #005f47;
-    padding: 20px;
-    border-radius: 10px;
-    width: 220px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background-color: #005f47; /* Vaša definicija */
+    padding: 20px; /* Vaša definicija */
+    border-radius: 10px; /* Vaša definicija */
+    width: 220px; /* Vaša definicija */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Vaša definicija */
+    color: white; /* Dodano, jer je background tamniji */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Zadržano za hover efekat */
+}
+
+.report-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 .report-card h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
+    margin-bottom: 10px; /* Vaša definicija */
+    font-size: 18px; /* Vaša definicija */
 }
 
 .report-card p {
+    font-size: 24px; /* Vaša definicija */
+    font-weight: bold; /* Vaša definicija */
+}
+
+
+/* --- Detailed Reports Table Section (NOVO / AŽURIRANO) --- */
+.detailed-reports {
+    margin-top: 50px;
+}
+
+.detailed-reports h3 {
     font-size: 24px;
+    color: #007f5f;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse; /* Spaja granice ćelija */
+    margin: 0 auto;
+    font-size: 1em;
+    border-radius: 10px; /* Zaobljeniji uglovi tabele */
+    overflow: hidden; /* Osigurava da zaobljenja rade */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sjena oko tabele */
+    background-color: #ffffff; /* Bijela pozadina tabele */
+}
+
+.reports-table th,
+.reports-table td {
+    padding: 15px 20px; /* Veći padding unutar ćelija */
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Delikatna donja granica */
+    color: #333; /* Boja teksta u ćelijama */
+}
+
+.reports-table thead th {
+    background-color: #009688; /* Zelena pozadina za zaglavlje */
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase; /* Velika slova za zaglavlja */
+    letter-spacing: 0.5px;
+}
+
+.reports-table tbody tr:nth-child(even) {
+    background-color: #f7fdfc; /* Svijetlija pozadina za parne redove */
+}
+
+.reports-table tbody tr:hover {
+    background-color: #e0f2f1; /* Nježni zeleni hover efekt */
+    cursor: default;
+}
+
+/* Zaobljenje gornjih uglova tabele */
+.reports-table thead tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+.reports-table thead tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+/* Media Queries for Responsiveness (Ostaju nepromijenjeni) */
+@media (max-width: 768px) {
+    .reports-page {
+        margin: 40px 15px;
+        padding: 20px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-link {
+        margin: 5px 0;
+    }
+
+    .report-results {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .report-card {
+        min-width: 80%; /* Širi kartice na manjim ekranima */
+        max-width: 95%;
+    }
+
+    .reports-table,
+    .reports-table tbody,
+    .reports-table tr,
+    .reports-table td,
+    .reports-table th {
+        display: block; /* Omogućava prelamanje tabele na manje ekrane */
+    }
+
+    .reports-table thead {
+        display: none; /* Sakrij zaglavlje tabele na mobilnim uređajima */
+    }
+
+    .reports-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .reports-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .reports-table td::before {
+        content: attr(data-label); /* Prikazuje zaglavlje kolone kao labelu */
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #007f5f;
+    }
+
+    /* Prilagodbe za prve i zadnje ćelije unutar responsivne tabele */
+    .reports-table td:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    .reports-table td:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom: none; /* Uklonite donju granicu za zadnju ćeliju */
+    }
+}
+.report-controls {
+    margin-bottom: 2rem;
+}
+
+.report-selector {
+    margin-bottom: 1rem;
+}
+
+.report-selector label {
+    display: block;
+    margin-bottom: 0.5rem;
     font-weight: bold;
+}
+
+.report-selector select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-width: 200px;
+}
+
+.filter-controls {
+    background: #007f5f;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.toggle-filters-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.toggle-filters-btn:hover {
+    background: #0056b3;
+}
+
+.filters-section {
+    animation: slideDown 0.3s ease;
+    max-width: 700px; /* Ograniči maksimalnu širinu */
+    margin: 0 auto;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 200px;
+    }
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.apply-filters-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.apply-filters-btn:hover {
+    background: #218838;
+}
+
+.apply-filters-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.reset-filters-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reset-filters-btn:hover {
+    background: #5a6268;
+}
+
+.sort-indicator {
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .filter-buttons button {
+        width: 100%;
+    }
+}
+.mockup-indicator {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mockup-indicator span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.report-type-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.report-type-badge.daily {
+    background: #d4edda;
+    color: #155724;
+}
+
+.report-type-badge.weekly {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.report-type-badge.monthly {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.amount-cell {
+    font-weight: bold;
+    color: #28a745;
+    text-align: right;
+}
+
+.personnel-cell {
+    font-size: 0.9rem;
+    color: #6c757d;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detailed-reports h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.no-reports-message {
+    text-align: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.no-reports-message p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.no-reports-message small {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .reports-table {
+        font-size: 0.8rem;
+    }
+
+    .personnel-cell {
+        display: none;
+    }
+
+    .reports-table th:last-child,
+    .reports-table td:last-child {
+        display: none;
+    }
 }

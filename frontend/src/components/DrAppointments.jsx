@@ -26,7 +26,12 @@ export default function DoctorAppointments() {
                 { time: "12:00", patient: "Petar Perić" },
                 { time: "14:30", patient: "Maja Majić" }
             ]
-        }
+        },
+        "2025-06-19": { // Stari datum radi primjera
+            "Dr. Heart": [
+                { time: "09:00", patient: "Harun Bešlić" }
+            ]
+        },
     });
 
     // Svi slotovi koje doktor ima u svom rasporedu

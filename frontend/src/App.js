@@ -11,7 +11,9 @@ import MedicalRecord from './components/MedicalRecord';
 import Rooms from './components/Rooms';
 import DrAppointment from './components/DrAppointments';
 import PatientEMR from "./components/PatientEMR";
-
+import ProtectedRoute from './components/ProtectedRoute';
+import Unauthorized from './components/Unauthorized';
+import RoleBasedNavigation from './components/RoleBasedNavigation';
 
 function App() {
   return (
@@ -44,14 +46,57 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path={"/invoices"} element={<Invoice />} />
-            <Route path={"/reports"} element={<Reports />} />
-            <Route path={"/emr"} element={<MedicalRecord />} />
-            <Route path={"/rooms"} element={<Rooms />} />
-            <Route path={"/dr-appointments"} element={<DrAppointment />} />
-            <Route path={"/patient-emr"} element={<PatientEMR />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+
+
+            {/* Svi ulogovani korisnici */}
+            <Route path="/profile" element={
+              <ProtectedRoute allowedRoles={['USER']}>
+                <Profile />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/appointments" element={
+              <ProtectedRoute allowedRoles={['DOCTOR', 'USER']}>
+                <Appointments />
+              </ProtectedRoute>
+            } />
+            {/* Samo ADMIN i STAFF mogu pristupiti fakturama */}
+            <Route path="/invoices" element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <Invoice />
+              </ProtectedRoute>
+            } />
+            {/* Samo ADMIN može pristupiti izvještajima */}
+            <Route path="/reports" element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <Reports />
+              </ProtectedRoute>
+            } />
+            {/* DOCTOR i ADMIN mogu pristupiti EMR */}
+            <Route path="/emr" element={
+              <ProtectedRoute allowedRoles={[ 'DOCTOR']}>
+                <MedicalRecord />
+              </ProtectedRoute>
+            } />
+            {/* Samo DOCTOR može pristupiti svojim terminima */}
+            <Route path="/dr-appointments" element={
+              <ProtectedRoute allowedRoles={['DOCTOR']}>
+                <DrAppointment />
+              </ProtectedRoute>
+            } />
+            {/* STAFF i ADMIN mogu pristupiti sobama */}
+            <Route path="/rooms" element={
+              <ProtectedRoute allowedRoles={['DOCTOR']}>
+                <Rooms />
+              </ProtectedRoute>
+            } />
+            {/* Patient EMR - svi ulogovani */}
+            <Route path="/patient-emr" element={
+              <ProtectedRoute allowedRoles={[ 'USER']}>
+                <PatientEMR />
+              </ProtectedRoute>
+            } />
           </Routes>
         </div>
       </BrowserRouter>

@@ -60,6 +60,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/client/reports/**").authenticated()
                         .requestMatchers("/api/client/emr/**").permitAll()
                         .requestMatchers("/api/client/patient-emr/**").authenticated() // DODANO
+                        .requestMatchers("/api/client/emr/kartoni/*/dijagnoze").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/client/emr/**").permitAll()
+                        .requestMatchers("/api/client/izvjestaji/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

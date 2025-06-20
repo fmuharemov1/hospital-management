@@ -90,3 +90,35 @@ main {
 .nav-link:hover {
   text-decoration: underline;
 }
+
+.unauthorized-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.unauthorized-content h1 {
+  color: #ff0000;
+  margin-bottom: 1rem;
+}
+
+.unauthorized-content p {
+  margin-bottom: 2rem;
+  color: #dddddd;
+}
+
+.logout-button {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.logout-button:hover {
+  background: #c0392b;
+}

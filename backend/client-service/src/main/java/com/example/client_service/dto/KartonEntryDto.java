@@ -2,6 +2,7 @@ package com.example.client_service.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class KartonEntryDto {
     private Long id;
@@ -27,4 +28,12 @@ public class KartonEntryDto {
 
     public List<DijagnozaDto> getDijagnoze() { return dijagnoze; }
     public void setDijagnoze(List<DijagnozaDto> dijagnoze) { this.dijagnoze = dijagnoze; }
+
+    public Long getPatientId() {
+        return pacijentUuid;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.pacijentUuid = patientId;
+    }
 }
